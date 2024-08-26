@@ -30,3 +30,6 @@ Thumbs.db
 # Redis cache
 *.rdb
 *.aof
+
+# Ignore EF Core FileContentIndex folder
+FileContentIndex/
