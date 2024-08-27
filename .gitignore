@@ -33,3 +33,6 @@ Thumbs.db
 
 # Ignore EF Core FileContentIndex folder
 FileContentIndex/
+
+# DesignTimeBuild Folder
+DesignTimeBuild/
