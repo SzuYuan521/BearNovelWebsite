@@ -44,10 +44,16 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
+// 從配置中讀取Redis連接字串
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
 // 添加 Redis緩存服務
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    if (string.IsNullOrEmpty(redisConnectionString))
+    {
+        throw new InvalidOperationException("Redis connection string is not configured.");
+    }
+    options.Configuration = redisConnectionString;
     options.InstanceName = "BearNovelWebsite";
 });
 
@@ -142,7 +148,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 // 添加路由中介軟體MiddleWare
 app.UseRouting();
