@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BearNovelWebsiteApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240826085239_InitialCreate")]
+    [Migration("20240827020800_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -332,7 +332,7 @@ namespace BearNovelWebsiteApi.Migrations
                     b.HasOne("BearNovelWebsiteApi.Models.Novel", "Novel")
                         .WithMany()
                         .HasForeignKey("NovelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Novel");
@@ -343,13 +343,13 @@ namespace BearNovelWebsiteApi.Migrations
                     b.HasOne("BearNovelWebsiteApi.Models.Novel", "Novel")
                         .WithMany()
                         .HasForeignKey("NovelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BearNovelWebsiteApi.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Novel");
@@ -362,13 +362,13 @@ namespace BearNovelWebsiteApi.Migrations
                     b.HasOne("BearNovelWebsiteApi.Models.Novel", "Novel")
                         .WithMany()
                         .HasForeignKey("NovelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BearNovelWebsiteApi.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Novel");
@@ -381,7 +381,7 @@ namespace BearNovelWebsiteApi.Migrations
                     b.HasOne("BearNovelWebsiteApi.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");

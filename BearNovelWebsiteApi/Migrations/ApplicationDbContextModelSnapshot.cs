@@ -330,7 +330,7 @@ namespace BearNovelWebsiteApi.Migrations
                     b.HasOne("BearNovelWebsiteApi.Models.Novel", "Novel")
                         .WithMany()
                         .HasForeignKey("NovelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Novel");
@@ -341,13 +341,13 @@ namespace BearNovelWebsiteApi.Migrations
                     b.HasOne("BearNovelWebsiteApi.Models.Novel", "Novel")
                         .WithMany()
                         .HasForeignKey("NovelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BearNovelWebsiteApi.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Novel");
@@ -360,13 +360,13 @@ namespace BearNovelWebsiteApi.Migrations
                     b.HasOne("BearNovelWebsiteApi.Models.Novel", "Novel")
                         .WithMany()
                         .HasForeignKey("NovelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BearNovelWebsiteApi.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Novel");
@@ -379,7 +379,7 @@ namespace BearNovelWebsiteApi.Migrations
                     b.HasOne("BearNovelWebsiteApi.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");

@@ -35,8 +35,16 @@ namespace BearNovelWebsiteApi.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             // 創建簽名憑證
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            // 確保 ExpireDays 是有效的正數
+            var expireDays = Convert.ToDouble(_configuration["Jwt:ExpireDays"]);
+            if (expireDays <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(expireDays), "The expire days must be a positive number.");
+            }
+
             // 設置 Token 的過期時間
-            var expires = DateTime.UtcNow.AddDays(Convert.ToDouble(_configuration["Jwt:ExpireDays"]));
+            var expires = DateTime.UtcNow.AddDays(expireDays);
 
             // 創建 JwtSecurityToken 實例，設定發行者、受眾、Claims、過期時間和簽名憑證
             var token = new JwtSecurityToken(

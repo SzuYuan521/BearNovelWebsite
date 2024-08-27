@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 using static BearNovelWebsiteApi.Constants;
 
 namespace BearNovelWebsiteApi.Data
@@ -50,6 +51,13 @@ namespace BearNovelWebsiteApi.Data
             builder.Entity<Like>()
                 .HasIndex(l => new { l.NovelId, l.UserId }) // 複合索引
                 .IsUnique();
+
+            // 禁用串聯刪除
+            foreach (var relationship in builder.Model.GetEntityTypes()
+                .SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+            }
         }
     }
 }
