@@ -82,12 +82,12 @@ builder.Services.AddAuthentication(options =>
     // 配置 JWT Token 的驗證參數
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true, // 驗證發行者是否有效
+        ValidateIssuer = false, // 不驗證發行者是否有效
         ValidateAudience = false, // 不驗證受眾(使用者)
         ValidateLifetime = true, // 驗證 Token 是否在有效期內
         ValidateIssuerSigningKey = true, // 驗證 Token 的簽名密鑰是否有效
-        ValidIssuer = jwtSection["Issuer"], // 設置 JWT Token 的合法發行者
-        ValidAudience = jwtSection["Audience"], // 設置 JWT Token 的合法受眾
+      //  ValidIssuer = jwtSection["Issuer"], // 設置 JWT Token 的合法發行者
+      //  ValidAudience = jwtSection["Audience"], // 設置 JWT Token 的合法受眾
         IssuerSigningKey = key, // 使用從配置文件中讀取的密鑰進行 Token 簽名驗證
         ClockSkew = TimeSpan.Zero // 設置 Token 的過期時間允許的時間偏移量為零(默認為5分鐘)
     };
@@ -124,8 +124,9 @@ builder.Services.AddAuthentication(options =>
             var userId = context.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
 
             // 從快取中獲取與用戶 ID 相關聯的 Token 字符串
-            var cachedToken = await cache.GetStringAsync($"tokens:{userId}");
+            var cachedToken = await cache.GetStringAsync($"user_token:{userId}");
 
+            
             // 如果快取中沒有找到 Token 或 Token 字符串為空
             if (string.IsNullOrEmpty(cachedToken))
             {
@@ -152,6 +153,8 @@ builder.Services.AddCors(options =>
               .AllowCredentials(); // 允許憑證
     });
 });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

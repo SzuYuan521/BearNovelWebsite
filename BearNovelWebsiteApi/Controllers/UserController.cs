@@ -101,11 +101,12 @@ namespace BearNovelWebsiteApi.Controllers
         public async Task<IActionResult> Logout()
         {
             // 確保用戶已經驗證
-            /*
+            
+            
             if (User.Identity == null || !User.Identity.IsAuthenticated)
             {
                 return Unauthorized("User is not authenticated.");
-            }*/
+            }
 
             // 獲取當前已登入的用戶
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);

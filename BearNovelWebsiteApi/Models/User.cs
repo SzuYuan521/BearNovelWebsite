@@ -6,6 +6,6 @@ namespace BearNovelWebsiteApi.Models
     public class User : IdentityUser<int>
     {
         public Role Role { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }
