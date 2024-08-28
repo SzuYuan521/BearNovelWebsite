@@ -1,0 +1,72 @@
+.custom-navbar {
+  display: flex;
+  justify-content: space-around;
+  background-color: #fff4f7;
+  padding: 1rem;
+  color: white;
+  align-items: center; /* 垂直置中 */
+}
+
+.custom-nav-link {
+  color: #000;
+  text-decoration: none;
+  font-size: 1.25rem;
+}
+
+.custom-nav-link:hover {
+  color: #eb93c9;
+}
+
+.custom-navbar-brand {
+  background: linear-gradient(to right, #886748, #a2725e, #e0a499, #e5d5c0);
+  -webkit-background-clip: text; /* 使背景顏色剪裁成文字形狀 (WebKit 引擎) */
+  background-clip: text; /* 使背景顏色剪裁成文字形狀 (所有瀏覽器) */
+  color: transparent; /* 使文字顏色透明以顯示背景漸層 */
+  font-weight: bold;
+  font-size: 1.5rem;
+  background-size: 400% 100%; /* 設置背景大小讓動畫明顯一點 */
+  animation: gradientGlow 40s linear infinite; /* 添加動畫 */
+}
+
+.custom-navbar-brand:hover {
+  background: linear-gradient(to right, #886748, #a2725e, #e0a499, #e5d5c0);
+  -webkit-background-clip: text; /* 使背景顏色剪裁成文字形狀 (WebKit 引擎) */
+  background-clip: text; /* 使背景顏色剪裁成文字形狀 (所有瀏覽器) */
+  color: transparent; /* 使文字顏色透明以顯示背景漸層 */
+}
+
+.custom-navbar-button {
+  background-color: #ff7070;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.custom-navbar-text {
+  color: #000;
+  margin-left: 15px;
+  font-size: 1.25rem;
+}
+
+.custom-nav-dropdown {
+  color: #000;
+  font-size: 1.25rem;
+}
+
+.logo-image {
+  height: 40px;
+  width: auto;
+}
+
+@keyframes gradientGlow {
+  0% {
+    background-position: -200% 0;
+  }
+  50% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
