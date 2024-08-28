@@ -57,12 +57,14 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.InstanceName = "BearNovelWebsite";
 });
 
-
 // 讀取配置
 // 從配置文件中讀取與 JWT 相關的設置, 這些設置包括密鑰 (Key), 發行者 (Issuer), 和受眾 (Audience)
 // jwtSection 存儲了這些配置的引用, 稍後將在配置 JWT 認證時使用
 var jwtSection = builder.Configuration.GetSection("Jwt");
-var key = Encoding.ASCII.GetBytes(jwtSection["Key"]);
+var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection["Key"]));
+
+// 確保 JwtService 被正確註冊
+builder.Services.AddScoped<JwtService>();
 
 // 配置JWT認證
 builder.Services.AddAuthentication(options =>
@@ -81,12 +83,12 @@ builder.Services.AddAuthentication(options =>
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true, // 驗證發行者是否有效
-        ValidateAudience = true, // 驗證受眾是否有效
+        ValidateAudience = false, // 不驗證受眾(使用者)
         ValidateLifetime = true, // 驗證 Token 是否在有效期內
         ValidateIssuerSigningKey = true, // 驗證 Token 的簽名密鑰是否有效
         ValidIssuer = jwtSection["Issuer"], // 設置 JWT Token 的合法發行者
         ValidAudience = jwtSection["Audience"], // 設置 JWT Token 的合法受眾
-        IssuerSigningKey = new SymmetricSecurityKey(key), // 使用從配置文件中讀取的密鑰進行 Token 簽名驗證
+        IssuerSigningKey = key, // 使用從配置文件中讀取的密鑰進行 Token 簽名驗證
         ClockSkew = TimeSpan.Zero // 設置 Token 的過期時間允許的時間偏移量為零(默認為5分鐘)
     };
     options.Events = new JwtBearerEvents
@@ -94,11 +96,18 @@ builder.Services.AddAuthentication(options =>
         // 當 Token 被成功驗證後觸發此事件
         OnTokenValidated = async context =>
         {
+            System.Diagnostics.Debug.WriteLine("OnTokenValidated");
             // 從 HTTP 請求的服務提供者中獲取 JwtService 實例
             var jwtService = context.HttpContext.RequestServices.GetRequiredService<JwtService>();
 
             // 將當前的 SecurityToken 轉換為 JwtSecurityToken
             var token = context.SecurityToken as JwtSecurityToken;
+
+            if(token != null)
+            {
+                var userIds = token.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                System.Diagnostics.Debug.WriteLine($"User ID from Token: {userIds}");
+            }
 
             // 如果 Token 不為 null, 且自訂的 ValidateToken 方法驗證失敗
             if (token != null && !await jwtService.ValidateToken(token.RawData))
@@ -123,9 +132,25 @@ builder.Services.AddAuthentication(options =>
                 // 表示 Token 已被撤銷
                 context.Fail("Token has been revoked");
             }
+        },
+        OnAuthenticationFailed = context =>
+        {
+            System.Diagnostics.Debug.WriteLine("OnAuthenticationFailed");
+            return Task.CompletedTask;
         }
     };
+});
 
+// 啟用 CORS (因為前後端端口可能不一致)
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:3000") // 允許的來源
+              .AllowAnyHeader() // 允許的標頭
+              .AllowAnyMethod() // 允許的 HTTP 方法
+              .AllowCredentials(); // 允許憑證
+    });
 });
 
 builder.Services.AddControllers();
@@ -133,13 +158,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// 清除所有現有的日誌提供程序
+builder.Logging.ClearProviders();
 // 添加日誌記錄
-builder.Logging.AddConsole(); // 添加控制台日誌記錄
-
-// 確保 JwtService 被正確註冊
-builder.Services.AddScoped<JwtService>();
+builder.Logging.AddConsole();
 
 var app = builder.Build();
+
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

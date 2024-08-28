@@ -41,11 +41,13 @@ namespace BearNovelWebsiteApi.Data
             builder.Entity<IdentityRoleClaim<int>>()
                 .HasKey(rc => rc.Id);
 
+            // 設置 Role 的預設值為 User 和 型別轉換
             builder.Entity<User>()
                 .Property(u => u.Role)
+                .HasDefaultValue(Role.User)
                 .HasConversion(
-                    v => v.ToString(), // 轉成string以存在資料庫中
-                    v => (Role)Enum.Parse(typeof(Role), v)); // 資料庫中的role會被解析成Constants.Role
+                    v => v.ToString(), // 將 Role 轉換為字符串存儲在資料庫中
+                    v => (Role)Enum.Parse(typeof(Role), v)); // 將字符串解析為 Role 列舉值
 
             // 同個user對同個novel只能點讚一次
             builder.Entity<Like>()
