@@ -16,7 +16,7 @@ function App() {
       try {
         const userData = await getUserInfo();
         setUser(userData);
-        console.log(userData);
+        console.log("User object:", userData);
         setIsLoggedIn(true);
       } catch (error) {
         setIsLoggedIn(false);
@@ -26,11 +26,19 @@ function App() {
     checkLoginStatus();
   }, []);
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
+  const handleLogin = async () => {
+    try {
+      const userData = await getUserInfo();
+      setUser(userData);
+      setIsLoggedIn(true);
+    } catch (error) {
+      setIsLoggedIn(false);
+      setUser(null);
+    }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    setUser(null);
     setIsLoggedIn(false);
   };
 

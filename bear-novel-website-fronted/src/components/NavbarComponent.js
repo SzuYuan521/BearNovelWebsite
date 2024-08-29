@@ -4,7 +4,7 @@ import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import "../css/navbar.css";
 
 // 導欄列組件
-const NavbarComponent = ({ isLoggedIn, onLogout }) => {
+const NavbarComponent = ({ isLoggedIn, onLogout, user }) => {
   // 獲取當前路由
   const location = useLocation();
 
@@ -37,9 +37,9 @@ const NavbarComponent = ({ isLoggedIn, onLogout }) => {
             </Nav.Link>
           </>
         )}
-        {isLoggedIn && (
+        {isLoggedIn && user && user.userName && (
           <NavDropdown
-            title="用戶選單" // 這裡到時候串Username
+            title={user.userName}
             id="basic-nav-dropdown"
             className="custom-nav-dropdown"
           >
