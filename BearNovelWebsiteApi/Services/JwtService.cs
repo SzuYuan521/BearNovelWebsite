@@ -13,14 +13,14 @@ namespace BearNovelWebsiteApi.Services
     public class JwtService
     {
         private readonly IConfiguration _configuration;
-        private readonly IDistributedCache _cache;
+   //     private readonly IDistributedCache _cache;
         private readonly ILogger<JwtService> _logger; // 注入 ILogger用以紀錄log
 
         // 建構函數, 注入 IConfiguration 和 IDistributedCache 以讀取配置和操作 Redis 緩存
         public JwtService(IConfiguration configuration, IDistributedCache cache, ILogger<JwtService> logger)
         {
             _configuration = configuration;
-            _cache = cache;
+        //    _cache = cache;
             _logger = logger; // 初始化 ILogger
         }
 
@@ -65,6 +65,7 @@ namespace BearNovelWebsiteApi.Services
             // 將 JwtSecurityToken 實例轉換為字符串
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
+            /*
             // 將生成的 Token 存儲到 Redis
             await _cache.SetStringAsync(
                 $"user_token:{user.Id}", // 存儲 Token 的鍵，根據用戶 ID 生成唯一鍵
@@ -73,16 +74,15 @@ namespace BearNovelWebsiteApi.Services
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(Convert.ToDouble(_configuration["Jwt:ExpireDays"])) // Token 過期時間
                 }
-            );
+            );*/
 
             _logger.LogInformation($"JWT Token for user {user.Id} is {tokenString}");
             System.Diagnostics.Debug.WriteLine($"JWT Token for user {user.Id} is {tokenString}");
 
-            ValidateToken(tokenString);
-
             return tokenString;
         }
 
+        /*
         // 驗證 Token 的方法
         public async Task<bool> ValidateToken(string token)
         {
@@ -95,7 +95,7 @@ namespace BearNovelWebsiteApi.Services
             var userId = jwtToken.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
 
             System.Diagnostics.Debug.WriteLine($"[ValidateToken] JWT Token {jwtToken}");
-
+            
             if (userId != null)
             {
                 var key = $"user_token:{userId}";
@@ -110,9 +110,10 @@ namespace BearNovelWebsiteApi.Services
                 System.Diagnostics.Debug.WriteLine("userId == null");
                 return false;
             }
-        }
+        }*/
 
-        // 撤銷 Token 的方法
+        /*
+        // 撤銷 Token 的方法(redis)
         public async Task<bool> RevokeJWTToken(int userId)
         {
             var cacheKey = $"user_token:{userId}"; // 根據用戶 ID 生成唯一鍵
@@ -127,6 +128,6 @@ namespace BearNovelWebsiteApi.Services
             await _cache.RemoveAsync(cacheKey); // 從 Redis 中移除 Token
             _logger.LogInformation($"Token revoked for user {userId}");
             return true;
-        }
+        }*/
     }
 }

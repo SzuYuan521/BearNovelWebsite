@@ -43,7 +43,9 @@ const NavbarComponent = ({ isLoggedIn, onLogout }) => {
             id="basic-nav-dropdown"
             className="custom-nav-dropdown"
           >
-            <NavDropdown.Item onClick={onLogout}>登出</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/logout">
+              登出
+            </NavDropdown.Item>
           </NavDropdown>
         )}
       </Nav>

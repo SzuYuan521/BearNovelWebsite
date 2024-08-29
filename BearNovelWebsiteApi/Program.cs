@@ -25,8 +25,8 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
     // 密碼設置
     options.Password.RequireDigit = true; // 密碼必須包含數字
     options.Password.RequireLowercase = true; // 密碼必須包含小寫字母
-    options.Password.RequireUppercase = true; // 密碼必須包含大寫字母
-    options.Password.RequireNonAlphanumeric = true; // 密碼必須包含非字母數字字符
+    options.Password.RequireUppercase = false; // 密碼必須包含大寫字母
+    options.Password.RequireNonAlphanumeric = false; // 密碼必須包含非字母數字字符
     options.Password.RequiredLength = 6; // 密碼最小長度
     options.Password.RequiredUniqueChars = 1; // 密碼必須包含唯一字符數量
 
@@ -91,12 +91,18 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = key, // 使用從配置文件中讀取的密鑰進行 Token 簽名驗證
         ClockSkew = TimeSpan.Zero // 設置 Token 的過期時間允許的時間偏移量為零(默認為5分鐘)
     };
+    
     options.Events = new JwtBearerEvents
     {
+        OnMessageReceived = context =>
+        {
+            context.Token = context.Request.Cookies["jwt"];
+            return Task.CompletedTask;
+        }
+        /*
         // 當 Token 被成功驗證後觸發此事件
         OnTokenValidated = async context =>
         {
-            System.Diagnostics.Debug.WriteLine("OnTokenValidated");
             // 從 HTTP 請求的服務提供者中獲取 JwtService 實例
             var jwtService = context.HttpContext.RequestServices.GetRequiredService<JwtService>();
 
@@ -133,14 +139,24 @@ builder.Services.AddAuthentication(options =>
                 // 表示 Token 已被撤銷
                 context.Fail("Token has been revoked");
             }
-        },
+        },*/
+        /*
         OnAuthenticationFailed = context =>
         {
             System.Diagnostics.Debug.WriteLine("OnAuthenticationFailed");
             return Task.CompletedTask;
-        }
+        }*/
     };
 });
+
+// Configure Google Authentication
+/*
+builder.Services.AddAuthentication()
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    });*/
 
 // 啟用 CORS (因為前後端端口可能不一致)
 builder.Services.AddCors(options =>

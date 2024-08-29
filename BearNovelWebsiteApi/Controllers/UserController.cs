@@ -7,6 +7,7 @@ using BearNovelWebsiteApi.Models;
 using BearNovelWebsiteApi.Services;
 using static BearNovelWebsiteApi.Constants;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace BearNovelWebsiteApi.Controllers
 {
@@ -84,12 +85,29 @@ namespace BearNovelWebsiteApi.Controllers
             if (result.Succeeded)
             {
                 // 生成 JWT token
-                var token = _jwtService.GenerateJWTToken(user);
-                _logger.LogInformation($"token : {token.Result}");
-                System.Diagnostics.Debug.WriteLine($"token : {token.Result}");
+                var token = await _jwtService.GenerateJWTToken(user);
+                _logger.LogInformation($"token : {token}");
+                Debug.WriteLine($"token : {token}");
+                Debug.WriteLine("User.Identity.IsAuthenticated " + User.Identity.IsAuthenticated);
+
+                // 設置 JWT 到 HttpOnly Cookie
+                Response.Cookies.Append("jwt", token, new CookieOptions
+                {
+                    HttpOnly = true, // 確保 Cookie 只能透過 Http 協議訪問
+                 //   SameSite = SameSiteMode.None, // 防止跨站點請求偽造 (CSRF)
+                    Expires = DateTime.UtcNow.AddDays(30) // 設置 Cookie 過期時間, 跟JWT一樣
+                });
 
                 // 返回 200 OK 和生成的 token
                 return Ok(new { token });
+            }
+            else
+            {
+                Debug.WriteLine($"登入失敗：{result.ToString()}", result.ToString());
+                // 判斷具體失敗原因
+                if (result.IsLockedOut) Debug.WriteLine("帳號被鎖定。");
+                if (result.IsNotAllowed) Debug.WriteLine("帳號不允許登入。");
+                if (result.RequiresTwoFactor) Debug.WriteLine("需要雙重驗證。");
             }
 
             // 如果登錄失敗, 返回 401 Unauthorized
@@ -100,32 +118,33 @@ namespace BearNovelWebsiteApi.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            // 確保用戶已經驗證
-            
-            
-            if (User.Identity == null || !User.Identity.IsAuthenticated)
-            {
-                return Unauthorized("User is not authenticated.");
-            }
+            // 清除 JWT Cookie
+            Response.Cookies.Delete("jwt");
 
             // 獲取當前已登入的用戶
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            //    var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
             // 撤銷JWT Token
-            var revoked = await _jwtService.RevokeJWTToken(userId);
+            //   var revoked = await _jwtService.RevokeJWTToken(userId);
 
-            if (revoked)
-            {
-                // 如果撤銷成功, 執行登出操作
-                await _signInManager.SignOutAsync();
-                _logger.LogInformation($"User {userId} logged out.");
-                return Ok(new { message = "User logged out successfully" });
-            }
-
-            // 如果撤銷失敗, 返回 400 Bad Request
-            return BadRequest(new { message = "Failed to revoke token" });
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation($"User logged out.");
+            return Ok(new { message = "User logged out successfully" });
         }
 
+        [HttpGet("user")]
+        public async Task<IActionResult> GetUserInfo()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found" });
+            }
+
+            return Ok(new { user.Email, user.UserName });
+        }
+
+        /*
         // 手動撤銷JWT Token
         [HttpPost("revoke-token")]
         public async Task<IActionResult> RevokeJWTToken([FromBody] int userId)
@@ -138,6 +157,6 @@ namespace BearNovelWebsiteApi.Controllers
             }
 
             return BadRequest(new { message = "Failed to revoke token" });
-        }
+        }*/
     }
 }

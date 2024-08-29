@@ -26,12 +26,15 @@ export async function register(userData) {
 export const login = async (userNameOrEmail, password) => {
   try {
     // 發送 POST 請求進行登入
-    const response = await axios.post(`${API_URL}/login`, {
-      UserNameOrEmail: userNameOrEmail,
-      Password: password,
-    });
-    // 登入成功後 服務器會設置一個包含用戶ID的 cookie
-    // 不需要在客戶端存儲 token
+    const response = await axios.post(
+      `${API_URL}/login`,
+      {
+        UserNameOrEmail: userNameOrEmail,
+        Password: password,
+      },
+      { withCredentials: true }
+    );
+    // 登入成功後 服務器會設置一個包含用戶ID的 cookie, 不需要在客戶端存儲 token
     return response.data; // 返回後端響應的數據
   } catch (error) {
     console.error("登入失敗:", error); // 記錄錯誤信息
@@ -41,6 +44,7 @@ export const login = async (userNameOrEmail, password) => {
 
 // 登出函數
 export const logout = async () => {
+  console.log("呼叫登出API");
   try {
     // 發送 POST 請求進行登出
     const response = await axios.post(
@@ -59,6 +63,17 @@ export const logout = async () => {
     return response.data; // 返回後端的響應數據
   } catch (error) {
     console.error("登出失敗:", error);
+    throw error.response ? error.response.data : new Error("Network error");
+  }
+};
+
+// 獲取UserData
+export const getUserInfo = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/user`);
+    return response.data;
+  } catch (error) {
+    console.error("獲取用戶信息失敗:", error);
     throw error.response ? error.response.data : new Error("Network error");
   }
 };
