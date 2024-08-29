@@ -9,7 +9,6 @@ const Logout = ({ onLogout }) => {
   // 處理登出事件
   useEffect(() => {
     const handleLogout = async () => {
-      console.log("handleLogout");
       try {
         await logout(); // 呼叫user-api/logout
         onLogout();

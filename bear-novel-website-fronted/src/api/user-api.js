@@ -44,7 +44,6 @@ export const login = async (userNameOrEmail, password) => {
 
 // 登出函數
 export const logout = async () => {
-  console.log("呼叫登出API");
   try {
     // 發送 POST 請求進行登出
     const response = await axios.post(
@@ -67,13 +66,74 @@ export const logout = async () => {
   }
 };
 
+// 用於刷新 token
+export const refreshToken = async (refreshToken) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/refresh`,
+      { refreshToken },
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Refresh token error:", error);
+    throw error;
+  }
+};
+
 // 獲取UserData
 export const getUserInfo = async () => {
   try {
-    const response = await axios.get(`${API_URL}/user`);
+    const response = await getWithToken(`${API_URL}/user`, {
+      withCredentials: true,
+    });
     return response.data;
   } catch (error) {
     console.error("獲取用戶信息失敗:", error);
     throw error.response ? error.response.data : new Error("Network error");
   }
 };
+
+async function getWithToken(apiUrl, options = {}) {
+  let response;
+  try {
+    response = await axios.get(apiUrl, options);
+    return response;
+  } catch (error) {
+    // Token 過期, 自動嘗試刷新
+    if (error.response && error.response.status === 401) {
+      switch (error.response.data.message) {
+        case "jwt not found":
+          console.log("token過期了, 自動嘗試刷新");
+          const refreshResponse = await axios.post(
+            `${API_URL}/refresh-token`,
+            {},
+            { withCredentials: true }
+          );
+
+          if (refreshResponse.status === 200) {
+            console.log("token 刷新成功, 重新發送請求");
+            // 重新發送原請求
+            response = await axios.get(apiUrl, options);
+          }
+          break;
+        case "token not found":
+          // jwt跟refreshToken都過期了
+          // 這裡之後加, 導入到重新登入或是首頁
+          break;
+        default:
+          console.error(
+            `Error: ${error.response ? error.response.status : error.message}`
+          );
+          break;
+      }
+    } else {
+      // 捕獲請求錯誤
+      console.error(
+        `Error: ${error.response ? error.response.status : error.message}`
+      );
+    }
+
+    return response;
+  }
+}

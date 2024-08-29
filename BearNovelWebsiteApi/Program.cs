@@ -44,19 +44,6 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// 從配置中讀取Redis連接字串
-var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
-// 添加 Redis緩存服務
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    if (string.IsNullOrEmpty(redisConnectionString))
-    {
-        throw new InvalidOperationException("Redis connection string is not configured.");
-    }
-    options.Configuration = redisConnectionString;
-    options.InstanceName = "BearNovelWebsite";
-});
-
 // 讀取配置
 // 從配置文件中讀取與 JWT 相關的設置, 這些設置包括密鑰 (Key), 發行者 (Issuer), 和受眾 (Audience)
 // jwtSection 存儲了這些配置的引用, 稍後將在配置 JWT 認證時使用
@@ -97,6 +84,18 @@ builder.Services.AddAuthentication(options =>
         OnMessageReceived = context =>
         {
             context.Token = context.Request.Cookies["jwt"];
+            return Task.CompletedTask;
+        },  
+        // 認證失敗時
+        OnAuthenticationFailed = context =>
+        {
+            if (context.Exception is SecurityTokenExpiredException)
+            {
+                // 捕獲 token 過期異常, 添加 Token-Expired 標頭方便前端處理
+                context.Response.Headers.Add("Token-Expired", "true");
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return Task.CompletedTask;
+            }
             return Task.CompletedTask;
         }
         /*
@@ -140,12 +139,6 @@ builder.Services.AddAuthentication(options =>
                 context.Fail("Token has been revoked");
             }
         },*/
-        /*
-        OnAuthenticationFailed = context =>
-        {
-            System.Diagnostics.Debug.WriteLine("OnAuthenticationFailed");
-            return Task.CompletedTask;
-        }*/
     };
 });
 
@@ -157,6 +150,20 @@ builder.Services.AddAuthentication()
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
     });*/
+
+
+// 從配置中讀取Redis連接字串
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+// 添加 Redis緩存服務
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    if (string.IsNullOrEmpty(redisConnectionString))
+    {
+        throw new InvalidOperationException("Redis connection string is not configured.");
+    }
+    options.Configuration = redisConnectionString;
+    options.InstanceName = "BearNovelWebsite";
+});
 
 // 啟用 CORS (因為前後端端口可能不一致)
 builder.Services.AddCors(options =>

@@ -15,13 +15,15 @@ namespace BearNovelWebsiteApi.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly JwtService _jwtService;
         private readonly ILogger<UsersController> _logger;
 
-        public UsersController(UserManager<User> userManager, SignInManager<User> signInManager, JwtService jwtService, ILogger<UsersController> logger)
+        public UsersController(IConfiguration configuration, UserManager<User> userManager, SignInManager<User> signInManager, JwtService jwtService, ILogger<UsersController> logger)
         {
+            _configuration = configuration;
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtService = jwtService;
@@ -54,7 +56,11 @@ namespace BearNovelWebsiteApi.Controllers
             return BadRequest(result.Errors);
         }
 
-        // 使用 POST 方法來處理用戶登錄
+        /// <summary>
+        /// 使用 POST 方法來處理用戶登錄
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>OK: accessToken, refreshToken, Failed: error</returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
@@ -85,21 +91,33 @@ namespace BearNovelWebsiteApi.Controllers
             if (result.Succeeded)
             {
                 // 生成 JWT token
-                var token = await _jwtService.GenerateJWTToken(user);
-                _logger.LogInformation($"token : {token}");
-                Debug.WriteLine($"token : {token}");
+                var accessToken = await _jwtService.GenerateJWTToken(user);
+                var refreshToken = _jwtService.GenerateRefreshToken(user.Id);
+
+                _logger.LogInformation($"accessToken : {accessToken}, refreshToken : {refreshToken}");
+                Debug.WriteLine($"accessToken : {accessToken}, refreshToken : {refreshToken}");
                 Debug.WriteLine("User.Identity.IsAuthenticated " + User.Identity.IsAuthenticated);
 
+                var expireDays = Convert.ToDouble(_configuration["Jwt:RefreshTokenExpireDays"]);
+                var expireMinutes = Convert.ToDouble(_configuration["Jwt:AccessTokenExpireMinutes"]);
+
+                // 設置RefreshToken 到 HttpOnly Cookie
+                Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Expires = DateTime.UtcNow.AddDays(expireDays)
+                });
+
                 // 設置 JWT 到 HttpOnly Cookie
-                Response.Cookies.Append("jwt", token, new CookieOptions
+                Response.Cookies.Append("jwt", accessToken, new CookieOptions
                 {
                     HttpOnly = true, // 確保 Cookie 只能透過 Http 協議訪問
                  //   SameSite = SameSiteMode.None, // 防止跨站點請求偽造 (CSRF)
-                    Expires = DateTime.UtcNow.AddDays(30) // 設置 Cookie 過期時間, 跟JWT一樣
+                    Expires = DateTime.UtcNow.AddMinutes(expireMinutes) // 設置 Cookie 過期時間, 跟JWT一樣
                 });
 
                 // 返回 200 OK 和生成的 token
-                return Ok(new { token });
+                return Ok(new { accessToken, refreshToken });
             }
             else
             {
@@ -120,12 +138,7 @@ namespace BearNovelWebsiteApi.Controllers
         {
             // 清除 JWT Cookie
             Response.Cookies.Delete("jwt");
-
-            // 獲取當前已登入的用戶
-            //    var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-
-            // 撤銷JWT Token
-            //   var revoked = await _jwtService.RevokeJWTToken(userId);
+            Response.Cookies.Delete("refreshToken");
 
             await _signInManager.SignOutAsync();
             _logger.LogInformation($"User logged out.");
@@ -138,25 +151,53 @@ namespace BearNovelWebsiteApi.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound(new { message = "User not found" });
+                var jwt = Request.Cookies["jwt"];
+                var refreshToken = Request.Cookies["refreshToken"];
+                // 如果 jwt 過期被自動刪除但 refreshToken 還在, 則返回 401 Unauthorized "jwt not found", 須重新產生jwt
+                if (string.IsNullOrEmpty(jwt) && !string.IsNullOrEmpty(refreshToken))
+                {
+                    return Unauthorized(new { message = "jwt not found" });
+                }
+                // 如果 jwt 跟 refreshToken 都不存在(過期), 則返回 401 Unauthorized "token not found", 前端須重新處理登入
+                else if (string.IsNullOrEmpty(jwt) && string.IsNullOrEmpty(refreshToken))
+                {
+                    return Unauthorized(new { message = "token not found" });
+                }
             }
 
             return Ok(new { user.Email, user.UserName });
         }
 
-        /*
-        // 手動撤銷JWT Token
-        [HttpPost("revoke-token")]
-        public async Task<IActionResult> RevokeJWTToken([FromBody] int userId)
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken()
         {
-            var revoked = await _jwtService.RevokeJWTToken(userId);
+            Debug.WriteLine("refresh-token");
 
-            if (revoked)
+            var refreshToken = Request.Cookies["refreshToken"];
+
+            // 如果refreshToken過期則返回 401 Unauthorized "token not found", 前端須重新處理登入
+            if (string.IsNullOrEmpty(refreshToken))
             {
-                return Ok(new { message = "Token revoked successfully" });
+                return Unauthorized("token not found");
             }
 
-            return BadRequest(new { message = "Failed to revoke token" });
-        }*/
+            // 生成新的 accessToken
+            var userId = _jwtService.ParseRefreshTokenUserId(refreshToken);
+            var user = await _userManager.FindByIdAsync(userId);
+            var newAccessToken = await _jwtService.GenerateJWTToken(user);
+
+            var expireMinutes = Convert.ToDouble(_configuration["Jwt:AccessTokenExpireMinutes"]);
+
+            Response.Cookies.Append("jwt", newAccessToken, new CookieOptions
+            {
+                HttpOnly = true, // 確保 Cookie 只能透過 Http 協議訪問
+                //   SameSite = SameSiteMode.None, // 防止跨站點請求偽造 (CSRF)
+                Expires = DateTime.UtcNow.AddMinutes(expireMinutes) // 設置 Cookie 過期時間, 跟JWT一樣
+            });
+
+            Debug.WriteLine($"newAccessToken : {newAccessToken}");
+
+            return Ok(new { accessToken = newAccessToken });
+        }
     }
 }
