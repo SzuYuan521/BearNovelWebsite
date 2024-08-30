@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
-using System.Threading.Tasks;
-using System.Security.Claims;
 using BearNovelWebsiteApi.Models;
 using BearNovelWebsiteApi.Services;
 using static BearNovelWebsiteApi.Constants;
-using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 
 namespace BearNovelWebsiteApi.Controllers
@@ -39,6 +35,7 @@ namespace BearNovelWebsiteApi.Controllers
             {
                 UserName = model.UserName, // 設置用戶名為註冊的電子郵件地址
                 Email = model.Email, // 設置電子郵件地址
+                NickName = string.IsNullOrEmpty(model.NickName) ? model.UserName : model.NickName, // 設置用戶暱稱, 沒填的話就設成UserName
                 Role = Role.User // 設置用戶類型為 User
             };
 
@@ -145,6 +142,10 @@ namespace BearNovelWebsiteApi.Controllers
             return Ok(new { message = "User logged out successfully" });
         }
 
+        /// <summary>
+        /// 取得 User 資料(未來要完善)
+        /// </summary>
+        /// <returns>email, userName</returns>
         [HttpGet("user")]
         public async Task<IActionResult> GetUserInfo()
         {
@@ -165,9 +166,13 @@ namespace BearNovelWebsiteApi.Controllers
                 }
             }
 
-            return Ok(new { user.Email, user.UserName });
+            return Ok(new { user.Email, user.UserName, user.NickName });
         }
 
+        /// <summary>
+        /// Refresh Token
+        /// </summary>
+        /// <returns>access Token</returns>
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken()
         {

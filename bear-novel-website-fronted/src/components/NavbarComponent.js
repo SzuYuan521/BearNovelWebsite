@@ -39,7 +39,7 @@ const NavbarComponent = ({ isLoggedIn, onLogout, user }) => {
         )}
         {isLoggedIn && user && user.userName && (
           <NavDropdown
-            title={user.userName}
+            title={user.nickName}
             id="basic-nav-dropdown"
             className="custom-nav-dropdown"
           >
@@ -63,7 +63,7 @@ const NavbarComponent = ({ isLoggedIn, onLogout, user }) => {
           <img
             src="/logo1000.png" // 替換成你的圖片路徑
             alt="小熊小說網"
-            className="d-inline-block align-top logo-image" // 使用自定义样式类
+            className="d-inline-block align-top logo-image" // 使用自定義樣式類
           />
           <span className="ms-2">小熊小說網</span>
         </Navbar.Brand>

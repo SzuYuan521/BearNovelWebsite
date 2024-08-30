@@ -7,6 +7,7 @@ const Register = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [nickName, setNickName] = useState("");
   const [error, setError] = useState("");
 
   // 處理提交事件
@@ -18,6 +19,7 @@ const Register = () => {
       UserName: userName,
       Email: email,
       Password: password,
+      NickName: nickName,
     };
 
     try {
@@ -39,7 +41,7 @@ const Register = () => {
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="userName">User Name</label>
+          <label htmlFor="userName">帳號</label>
           <input
             type="text"
             id="userName"
@@ -49,7 +51,7 @@ const Register = () => {
           />
         </div>
         <div>
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">電子信箱</label>
           <input
             type="email"
             id="email"
@@ -66,6 +68,15 @@ const Register = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)} // 更新密碼
             required
+          />
+        </div>
+        <div>
+          <label htmlFor="nickName">暱稱</label>
+          <input
+            type="text"
+            id="nickName"
+            value={nickName}
+            onChange={(e) => setNickName(e.target.value)} // 更新暱稱
           />
         </div>
         <button type="submit">註冊</button>
