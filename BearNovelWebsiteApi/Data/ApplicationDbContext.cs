@@ -13,6 +13,7 @@ namespace BearNovelWebsiteApi.Data
         public DbSet<Chapter> Chapters { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Like> Likes { get; set; }
+        public DbSet<NovelView> NovelViews { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -53,6 +54,25 @@ namespace BearNovelWebsiteApi.Data
             builder.Entity<Like>()
                 .HasIndex(l => new { l.NovelId, l.UserId }) // 複合索引
                 .IsUnique();
+
+            // 配置 Novel 表
+            builder.Entity<Novel>()
+                .Property(n => n.ViewCount)
+                .HasDefaultValue(0); // 默認觀看次數為0
+
+            // 配置 NovelView 表
+            builder.Entity<NovelView>()
+                .HasKey(nv => nv.NovelViewId);
+
+            builder.Entity<NovelView>()
+                .HasOne(nv => nv.Novel)
+                .WithMany(n => n.NovelViews)
+                .HasForeignKey(nv => nv.NovelId);
+
+            builder.Entity<NovelView>()
+                .HasOne(nv => nv.User)
+                .WithMany()
+                .HasForeignKey(nv => nv.UserId);
 
             // 禁用串聯刪除
             foreach (var relationship in builder.Model.GetEntityTypes()

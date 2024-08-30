@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using StackExchange.Redis;
 using BearNovelWebsiteApi.Services;
+using System.ComponentModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -98,47 +99,6 @@ builder.Services.AddAuthentication(options =>
             }
             return Task.CompletedTask;
         }
-        /*
-        // 當 Token 被成功驗證後觸發此事件
-        OnTokenValidated = async context =>
-        {
-            // 從 HTTP 請求的服務提供者中獲取 JwtService 實例
-            var jwtService = context.HttpContext.RequestServices.GetRequiredService<JwtService>();
-
-            // 將當前的 SecurityToken 轉換為 JwtSecurityToken
-            var token = context.SecurityToken as JwtSecurityToken;
-
-            if(token != null)
-            {
-                var userIds = token.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                System.Diagnostics.Debug.WriteLine($"User ID from Token: {userIds}");
-            }
-
-            // 如果 Token 不為 null, 且自訂的 ValidateToken 方法驗證失敗
-            if (token != null && !await jwtService.ValidateToken(token.RawData))
-            {
-                // 驗證失敗的 Token 被拒絕
-                context.Fail("Invalid token");
-                return;
-            }
-
-            // 從 HTTP 請求的服務提供者中獲取分佈式快取服務（例如 Redis）
-            var cache = context.HttpContext.RequestServices.GetRequiredService<IDistributedCache>();
-
-            // 從 Token 的 Claims 中提取用戶 ID
-            var userId = context.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            // 從快取中獲取與用戶 ID 相關聯的 Token 字符串
-            var cachedToken = await cache.GetStringAsync($"user_token:{userId}");
-
-            
-            // 如果快取中沒有找到 Token 或 Token 字符串為空
-            if (string.IsNullOrEmpty(cachedToken))
-            {
-                // 表示 Token 已被撤銷
-                context.Fail("Token has been revoked");
-            }
-        },*/
     };
 });
 
@@ -177,6 +137,9 @@ builder.Services.AddCors(options =>
     });
 });
 
+
+
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
@@ -188,6 +151,13 @@ builder.Services.AddSwaggerGen();
 builder.Logging.ClearProviders();
 // 添加日誌記錄
 builder.Logging.AddConsole();
+
+// 註冊業務服務
+builder.Services.AddScoped<NovelService>();
+
+// 註冊背景服務
+builder.Services.AddSingleton<RankingBackgroundService>();
+builder.Services.AddSingleton<NovelCleanupService>();
 
 var app = builder.Build();
 
