@@ -60,6 +60,18 @@ namespace BearNovelWebsiteApi.Data
                 .Property(n => n.ViewCount)
                 .HasDefaultValue(0); // 默認觀看次數為0
 
+            builder.Entity<Novel>()
+                .Property(n => n.LikeCount)
+                .HasDefaultValue(0); // 默認點讚次數為0
+
+            builder.Entity<Novel>()
+                .Property(n => n.IsDeleted)
+                .HasDefaultValue(false); // 默認未刪除
+
+            builder.Entity<Novel>()
+                .Property(n => n.IsEnding)
+                .HasDefaultValue(false); // 默認未完結
+
             // 配置 NovelView 表
             builder.Entity<NovelView>()
                 .HasKey(nv => nv.NovelViewId);

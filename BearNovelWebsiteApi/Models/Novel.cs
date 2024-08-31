@@ -10,6 +10,7 @@
         public DateTime UpdatedAt { get; set;} = DateTime.Now;
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
+        public bool IsEnding { get; set; }
 
         // 小說總觀看數
         public int ViewCount { get; set; } 
