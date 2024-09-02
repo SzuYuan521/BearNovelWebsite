@@ -30,9 +30,13 @@ export const getNovelsByUser = async (userId) => {
 // 創建新小說
 export const createNovel = async (novel) => {
   try {
-    const response = await axios.post(`${API_URL}/`, novel, {
-      withCredentials: true,
-    });
+    const response = await axios.post(
+      `${API_URL}/`,
+      { NovelTitle: novel.Title, NovelDescription: novel.Description },
+      {
+        withCredentials: true,
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error creating novel:", error);
@@ -43,9 +47,18 @@ export const createNovel = async (novel) => {
 // 更新小說
 export const updateNovel = async (id, updatedNovel) => {
   try {
-    const response = await axios.put(`${API_URL}/${id}`, updateNovel, {
-      withCredentials: true,
-    });
+    const response = await axios.put(
+      `${API_URL}/${id}`,
+      {
+        NovelId: id,
+        NovelTitle: updatedNovel.Title,
+        NovelDescription: updatedNovel.Description,
+        IsEnding: updatedNovel.IsEnding,
+      },
+      {
+        withCredentials: true,
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("更新小說失敗: ", error);
@@ -98,6 +111,67 @@ export const recordView = async (id) => {
     );
   } catch (error) {
     console.error("記錄觀看失敗: ", error);
+    throw error;
+  }
+};
+
+// 新增章節
+export const createChapter = async (id, chapter) => {
+  try {
+    await axios.post(
+      `${API_URL}/${id}/chapters`,
+      { ChapterTitle: chapter.Title, ChapterContent: chapter.Content },
+      {
+        withCredentials: true,
+      }
+    );
+  } catch (error) {
+    console.log("新增章節失敗");
+    throw error;
+  }
+};
+
+// 編輯章節
+export const updateChapter = async (id, chapter) => {
+  try {
+    await axios.put(
+      `${API_URL}/chapter/${id}`,
+      {
+        ChapterTitle: chapter.Title,
+        ChapterContent: chapter.Content,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+  } catch (error) {
+    console.log("更新章節失敗");
+    throw error;
+  }
+};
+
+// 刪除章節
+export const deleteChapter = async (id) => {
+  try {
+    await axios.delete(
+      `${API_URL}/chapter/${id}`,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
+  } catch (error) {
+    console.log("刪除章節失敗");
+    throw error;
+  }
+};
+
+// 取得章節
+export const getChapter = async (id) => {
+  try {
+    await axios.get(`${API_URL}/chapter/${id}`);
+  } catch (error) {
+    console.log("取得章節失敗");
     throw error;
   }
 };
