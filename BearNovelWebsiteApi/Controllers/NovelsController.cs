@@ -47,6 +47,14 @@ namespace BearNovelWebsiteApi.Controllers
                     novel.IsLiked = likedNovelIds.Contains(novel.NovelId);
                 }
             }
+            else
+            {
+                // 用戶未登入，所有小說的 IsLiked 屬性設置為 false
+                foreach (var novel in novels)
+                {
+                    novel.IsLiked = false;
+                }
+            }
             return Ok(novels);
         }
 
@@ -61,21 +69,35 @@ namespace BearNovelWebsiteApi.Controllers
             var novels = await _context.Novels
                 .Where(n => n.AuthorId == userId && !n.IsDeleted) // 根據UserId過濾並排除已刪除的小說
                 .Include(n => n.User) // 包含User信息
-                .Select(n => new
-                {
-                    Novel = n,
-                    IsLiked = _context.Likes.Any(l => l.NovelId == n.NovelId && l.UserId == userId)
-
-                })
                 .ToListAsync();
 
 
-            // 將查詢結果轉化為 Novel 並設置 IsLiked 屬性
-            var novelList = novels.Select(n =>
+            // 檢查用戶是否已登入
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            // 如果用戶已登入，獲取點讚信息
+            if (int.TryParse(userIdClaim, out var id) && id > 0)
             {
-                n.Novel.IsLiked = n.IsLiked;
-                return n.Novel;
-            }).ToList();
+                // 獲取用戶點讚過的小說ID集合
+                var likedNovelIds = await _context.Likes
+                    .Where(l => l.UserId == id)
+                    .Select(l => l.NovelId)
+                    .ToListAsync();
+
+                // 為每個小說添加是否已點讚的標誌
+                foreach (var novel in novels)
+                {
+                    novel.IsLiked = likedNovelIds.Contains(novel.NovelId);
+                }
+            }
+            else
+            {
+                // 用戶未登入，所有小說的 IsLiked 屬性設置為 false
+                foreach (var novel in novels)
+                {
+                    novel.IsLiked = false;
+                }
+            }
 
             return Ok(novels);
         }
@@ -99,6 +121,34 @@ namespace BearNovelWebsiteApi.Controllers
                 .Where(n => n.AuthorId == user.Id && !n.IsDeleted) // 根據UserId過濾並排除已刪除的小說
                 .Include(n => n.User) // 包含User信息
                 .ToListAsync();
+
+            // 檢查用戶是否已登入
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            // 如果用戶已登入，獲取點讚信息
+            if (int.TryParse(userIdClaim, out var userId) && userId > 0)
+            {
+                // 獲取用戶點讚過的小說ID集合
+                var likedNovelIds = await _context.Likes
+                    .Where(l => l.UserId == userId)
+                    .Select(l => l.NovelId)
+                    .ToListAsync();
+
+                // 為每個小說添加是否已點讚的標誌
+                foreach (var novel in novels)
+                {
+                    novel.IsLiked = likedNovelIds.Contains(novel.NovelId);
+                }
+            }
+            else
+            {
+                // 用戶未登入，所有小說的 IsLiked 屬性設置為 false
+                foreach (var novel in novels)
+                {
+                    novel.IsLiked = false;
+                }
+            }
+
             return Ok(novels);
         }
 
@@ -118,6 +168,34 @@ namespace BearNovelWebsiteApi.Controllers
             var novels = await _context.Novels
                 .Where(n => n.Title.Contains(keywords) && !n.IsDeleted) // 根據關鍵字查找標題並排除已刪除的小說
                 .ToListAsync();
+
+            // 檢查用戶是否已登入
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            // 如果用戶已登入，獲取點讚信息
+            if (int.TryParse(userIdClaim, out var userId) && userId > 0)
+            {
+                // 獲取用戶點讚過的小說ID集合
+                var likedNovelIds = await _context.Likes
+                    .Where(l => l.UserId == userId)
+                    .Select(l => l.NovelId)
+                    .ToListAsync();
+
+                // 為每個小說添加是否已點讚的標誌
+                foreach (var novel in novels)
+                {
+                    novel.IsLiked = likedNovelIds.Contains(novel.NovelId);
+                }
+            }
+            else
+            {
+                // 用戶未登入，所有小說的 IsLiked 屬性設置為 false
+                foreach (var novel in novels)
+                {
+                    novel.IsLiked = false;
+                }
+            }
+
             return Ok(novels);
         }
 
