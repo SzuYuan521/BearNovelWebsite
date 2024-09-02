@@ -480,11 +480,6 @@ namespace BearNovelWebsiteApi.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
                 // 查找需要刪除的章節
                 var existingChapter = await _context.Chapters
                     .Include(c => c.Novel) // 包含小說資料，用於檢查作者權限
