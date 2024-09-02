@@ -4,11 +4,15 @@ import React from "react"; // 引入 React 庫
 import ReactDOM from "react-dom/client"; // 引入 ReactDOM
 import App from "./App"; // 引入應用程式的主要組件, 是應用的入口點, 包含了應用的主要邏輯和路由設定
 import "./css/global.css";
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
 // React 18 的新渲染方式
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>
 );

@@ -84,7 +84,6 @@ const NovelList = () => {
                 </div>
                 <LikeToggle
                   novelId={novel.novelId}
-                  isLiked={novel.isLiked}
                   likeCount={novel.likeCount}
                   onLikeChange={handleLikeChange}
                 />
