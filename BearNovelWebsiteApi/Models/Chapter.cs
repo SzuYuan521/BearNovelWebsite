@@ -9,6 +9,8 @@
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
         // 導航屬性
         public Novel Novel { get; set; }
     }
