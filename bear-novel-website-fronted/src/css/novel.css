@@ -1,0 +1,166 @@
+.novel-grid {
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  gap: 5px;
+}
+
+/* 小說資訊 */
+.novel-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 0.5rem;
+}
+
+/* 作者+連載狀態 / 連載狀態+連載狀態icon */
+.novel-sub-Info-right {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 觀看數, 點讚數, 點讚按鈕 */
+.novel-popular {
+  height: 40px; /* 固定高度 */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 觀看點讚數顯示區 */
+.novel-popular-left {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* 小說資訊左側(主要放圖) */
+.novel-left {
+  width: 100px;
+  height: 140px;
+  position: relative; /* 確保子元素定位正常 */
+  overflow: hidden;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 6px 10px rgba(0, 0, 0, 0.19); /* 添加立體陰影效果 */
+  transition: transform 0.3s ease;
+}
+
+/* 小說封面圖 */
+.novel-image {
+  width: 100px;
+  height: 140px;
+  border-radius: 0.5rem;
+}
+
+.novel-image:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+.novel-left:hover {
+  box-shadow: 0px 4px 6px #ecd4d4,
+    /* 第一層陰影:淺粉色調，增加溫和的立體感 */ 0px 6px 10px #cb8a90; /* 第二層陰影:深粉色調，增強深度感 */
+  transition: transform 0.2s ease; /* 添加過渡效果 */
+}
+
+/* 小說資訊右側(主要是文字資訊) */
+.novel-right {
+  flex: 1; /* 右邊區塊自適應寬度 */
+  overflow: hidden; /* 隱藏溢出的內容 */
+  text-overflow: ellipsis; /* 超出部分以省略號顯示 */
+  display: flex;
+  flex-direction: column; /* 垂直排列 */
+  justify-content: space-between;
+  height: 140px;
+}
+
+.novel-link {
+  text-decoration: none; /* 移除超連結的下劃線 */
+  color: inherit; /* 保持文字顏色與其父元素一致 */
+}
+
+/* 小說標題 */
+.novel-title {
+  height: 25px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 1.2rem;
+  text-align: left;
+}
+
+/* 作者 */
+.novel-author {
+  height: 1.4em;
+  font-size: 0.8rem;
+  color: #818181;
+  text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* 連載狀態文字 */
+.novel-serialized {
+  height: 1.4em;
+  font-size: 0.8rem;
+  color: #818181;
+  white-space: nowrap;
+}
+
+/* 小說說明 */
+.novel-description {
+  flex: 1; /* 佔據剩餘高度 */
+  color: #adadad;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal; /* 確保文本可以正常換行 */
+  font-size: 0.8rem;
+  text-align: left;
+  display: -webkit-box; /* 使用 Flexbox 將文本設為塊狀元素 */
+  -webkit-box-orient: vertical; /* 垂直排列子元素 */
+  -webkit-line-clamp: 4; /* 限制文本顯示 5 行 */
+  line-height: 1.4em; /* 設置行高，根據內容調整 */
+  max-height: calc(1.4em * 4); /* 限制總高度為 5 行的高度 */
+  margin: 0;
+}
+
+/* 連載狀態Icon */
+.serialized-icon {
+  width: 25px;
+  height: 25px;
+  margin: 0px 3px 13px 0px;
+}
+
+.like-icon {
+  width: 25px;
+  height: 25px;
+}
+
+.view-icon {
+  width: 25px;
+  height: 25px;
+}
+
+/* 點讚按鈕 */
+.like-button {
+  background: none; /* 移除背景 */
+  border: none; /* 移除邊框 */
+  padding: 0; /* 移除內邊距 */
+}
+
+/* 點讚按鈕圖 */
+.like-toggle {
+  width: 35px;
+  height: 35px;
+}
+
+/* 點讚數觀看數文字 */
+.like-count,
+.view-count {
+  font-size: 0.8rem;
+  color: #adadad;
+  margin: 0;
+}
