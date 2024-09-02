@@ -4,7 +4,6 @@ using BearNovelWebsiteApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 
 namespace BearNovelWebsiteApi.Controllers
@@ -29,8 +28,25 @@ namespace BearNovelWebsiteApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetNovels()
         {
-            // 從資料庫中獲取所有小說, 包括每個小說的作者(關聯User)
-            var novels = await _context.Novels.Include(n => n.User).ToListAsync();
+            // 從資料庫中獲取所有小說, 過濾掉軟刪除的小說, 包括每個小說的作者(關聯User)
+            var novels = await _context.Novels.Where(n => !n.IsDeleted).Include(n => n.User).ToListAsync();
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            // 如果用戶未登錄，不需要檢查點讚記錄
+            if (int.TryParse(userIdClaim, out var userId) && userId > 0)
+            {
+                // 獲取用戶點讚過的小說ID集合
+                var likedNovelIds = await _context.Likes
+                    .Where(l => l.UserId == userId)
+                    .Select(l => l.NovelId)
+                    .ToListAsync();
+
+                // 為每個小說添加是否已點讚的標誌
+                foreach (var novel in novels)
+                {
+                    novel.IsLiked = likedNovelIds.Contains(novel.NovelId);
+                }
+            }
             return Ok(novels);
         }
 
@@ -43,9 +59,24 @@ namespace BearNovelWebsiteApi.Controllers
         public async Task<IActionResult> GetNovelsByUserId([FromRoute] int userId)
         {
             var novels = await _context.Novels
-                .Where(n => n.AuthorId == userId) // 根據UserId過濾
+                .Where(n => n.AuthorId == userId && !n.IsDeleted) // 根據UserId過濾並排除已刪除的小說
                 .Include(n => n.User) // 包含User信息
+                .Select(n => new
+                {
+                    Novel = n,
+                    IsLiked = _context.Likes.Any(l => l.NovelId == n.NovelId && l.UserId == userId)
+
+                })
                 .ToListAsync();
+
+
+            // 將查詢結果轉化為 Novel 並設置 IsLiked 屬性
+            var novelList = novels.Select(n =>
+            {
+                n.Novel.IsLiked = n.IsLiked;
+                return n.Novel;
+            }).ToList();
+
             return Ok(novels);
         }
 
@@ -65,7 +96,7 @@ namespace BearNovelWebsiteApi.Controllers
             if(user == null) return NotFound("找不到該作者");
 
             var novels = await _context.Novels
-                .Where(n => n.AuthorId == user.Id) // 根據UserId過濾
+                .Where(n => n.AuthorId == user.Id && !n.IsDeleted) // 根據UserId過濾並排除已刪除的小說
                 .Include(n => n.User) // 包含User信息
                 .ToListAsync();
             return Ok(novels);
@@ -85,7 +116,7 @@ namespace BearNovelWebsiteApi.Controllers
             }
 
             var novels = await _context.Novels
-                .Where(n => n.Title.Contains(keywords)) // 根據關鍵字查找標題
+                .Where(n => n.Title.Contains(keywords) && !n.IsDeleted) // 根據關鍵字查找標題並排除已刪除的小說
                 .ToListAsync();
             return Ok(novels);
         }
@@ -104,10 +135,15 @@ namespace BearNovelWebsiteApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("用戶未登錄");
+            }
+
             novel.AuthorId = userId;
 
-            _context.Novels.Add(novel);
+            await  _context.Novels.AddAsync(novel);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetNovels), new { id = novel.NovelId}, novel);
@@ -134,10 +170,10 @@ namespace BearNovelWebsiteApi.Controllers
             if (existingNovel == null)
                 return NotFound("Novel not found");
 
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             // 確認作者Id跟userId是否一樣
-            if (existingNovel.AuthorId != userId)
-                return Forbid("No permission to update this novel");
+            if (!int.TryParse(userIdClaim, out var userId) || existingNovel.AuthorId != userId)
+                return Forbid("沒有權限更新小說");
 
             existingNovel.Title = updatedNovel.Title;
             existingNovel.Description = updatedNovel.Description;
@@ -162,13 +198,16 @@ namespace BearNovelWebsiteApi.Controllers
         public async Task<IActionResult> DeleteNovel([FromRoute] int id/*, [FromQuery]int userId*/)
         {
             var novel = await _context.Novels.FindAsync(id);
-            if (novel == null) return NotFound();
+            if (novel == null) return NotFound("Novel not found");
 
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            if (novel.AuthorId != userId) return Forbid("Not author");
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdClaim, out var userId) || novel.AuthorId != userId)
+                return Forbid("沒有權限刪除小說");
 
             novel.IsDeleted = true;
             novel.DeletedAt = DateTime.Now;
+
+            _context.Update(novel);
             await _context.SaveChangesAsync();
 
             return NoContent(); 
@@ -183,9 +222,12 @@ namespace BearNovelWebsiteApi.Controllers
         [Authorize]
         public async Task<IActionResult> LikeNovel([FromRoute] int id)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdClaim, out var userId))
+                return Unauthorized("用戶未登錄");
+
             var novel = await _context.Novels.FindAsync(id);
-            if (novel == null) return NotFound();
+            if (novel == null) return NotFound("Novel not found");
 
             // 檢查用戶是否點過讚
             var existingLike = await _context.Likes.FirstOrDefaultAsync(l => l.NovelId == id && l.UserId == userId);
@@ -198,7 +240,7 @@ namespace BearNovelWebsiteApi.Controllers
             else
             {
                 // 如果沒有點過讚, 則新增點讚記錄
-                _context.Likes.Add(new Like
+                await _context.Likes.AddAsync(new Like
                 {
                     NovelId = id,
                     UserId = userId,
@@ -207,7 +249,10 @@ namespace BearNovelWebsiteApi.Controllers
                 novel.LikeCount++;
             }
 
+            // 指定 novel 實體的 LikeCount 屬性為已修改
+            _context.Entry(novel).Property(n => n.LikeCount).IsModified = true;
             await _context.SaveChangesAsync();
+
             return Ok(new { LikeCount = novel.LikeCount });
         }
 
@@ -220,7 +265,14 @@ namespace BearNovelWebsiteApi.Controllers
         [Authorize]
         public async Task<IActionResult> RecordView([FromRoute] int id)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdClaim, out var userId))
+                return Unauthorized("用戶未登入");
+
+            var novel = await _context.Novels.FindAsync(id);
+            if (novel == null) return NotFound("Novel not found");
+
+
             await _novelService.RecordViewAsync(id, userId);
             return Ok();
         }

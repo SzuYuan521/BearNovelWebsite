@@ -42,16 +42,15 @@ namespace BearNovelWebsiteApi.Services
                 };
 
                 await _context.NovelViews.AddAsync(view);
-                await _context.SaveChangesAsync();
 
                 // 更新小說的觀看次數
                 var novel = await _context.Novels.FindAsync(novelId);
                 if (novel != null)
                 {
                     novel.ViewCount++;
-                    _context.Novels.Update(novel);
-                    await _context.SaveChangesAsync();
+                    _context.Entry(novel).Property(n => n.ViewCount).IsModified = true;
                 }
+                await _context.SaveChangesAsync();
             }
         }
 

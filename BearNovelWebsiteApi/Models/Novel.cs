@@ -1,4 +1,6 @@
-﻿namespace BearNovelWebsiteApi.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace BearNovelWebsiteApi.Models
 {
     public class Novel
     {
@@ -17,6 +19,10 @@
 
         // 點讚總觀看數
         public int LikeCount { get; set; }
+
+        // 用於表示是否已點讚, 前端用, 不用回傳
+        [NotMapped]
+        public bool IsLiked { get; set; }
 
         public User User { get; set; }
         public ICollection<NovelView> NovelViews { get; set; }
