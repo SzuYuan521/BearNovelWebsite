@@ -1,8 +1,12 @@
 .custom-navbar {
   display: flex;
   justify-content: space-around;
-  background-color: #fff4f7;
-  padding: 1rem;
+  /*background: linear-gradient(to right, #edeef0, #ede1e3, #d1dfe8, #909fa6);*/
+  /*background: linear-gradient(to right, #faf0e4, #eecfbb, #f6b99d, #cb8a90);*/
+  /* background: linear-gradient(to right, #fadcda, #eeb8b8, #c5dad1, #d5cb8e);*/
+  /* background: linear-gradient(to right, #efeff1, #ecd4d4, #ccdbe2, #c9cbe0);*/
+  background: linear-gradient(to right, #efeff1, #ecd4d4, #cb8a90);
+  padding: 0.5rem;
   color: white;
   align-items: center; /* 垂直置中 */
 }
@@ -10,7 +14,7 @@
 .custom-nav-link {
   color: #000;
   text-decoration: none;
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 
 .custom-nav-link:hover {
@@ -46,12 +50,12 @@
 .custom-navbar-text {
   color: #000;
   margin-left: 15px;
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 
 .custom-nav-dropdown {
   color: #000;
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 
 .logo-image {
