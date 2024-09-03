@@ -1,31 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { getNovels } from "../api/novel-api";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../css/novel.css";
 import LikeToggle from "./LikeToggle";
+import { useDispatch, useSelector } from "react-redux";
+import { getNovelList, updateLikeStatus } from "../redux/slices/novelSlice";
 
 const NovelList = () => {
-  const [novels, setNovels] = useState([]);
+  const dispatch = useDispatch();
+  const novels = useSelector((state) => state.novels.list);
+  const novelStatus = useSelector((state) => state.novels.status);
 
   useEffect(() => {
-    const getAllNovels = async () => {
-      try {
-        const novelsData = await getNovels();
-        setNovels(novelsData);
-      } catch (error) {
-        console.error("取不到所有小說: ", error);
-      }
-    };
-    getAllNovels();
-  }, []);
+    if (novelStatus === "idle") {
+      dispatch(getNovelList());
+    }
+  }, [dispatch, novelStatus]);
 
   const handleLikeChange = (novelId, newLikedStatus, newLikeCount) => {
-    setNovels((prevNovels) =>
-      prevNovels.map((novel) =>
-        novel.novelId === novelId
-          ? { ...novel, isLiked: newLikedStatus, likeCount: newLikeCount }
-          : novel
-      )
+    dispatch(
+      updateLikeStatus({
+        novelId,
+        isLiked: newLikedStatus,
+        likeCount: newLikeCount,
+      })
     );
   };
 
