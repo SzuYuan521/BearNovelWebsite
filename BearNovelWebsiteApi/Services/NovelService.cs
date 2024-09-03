@@ -1,12 +1,10 @@
 ﻿using BearNovelWebsiteApi.Data;
+using Microsoft.AspNetCore.Authorization;
 using BearNovelWebsiteApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace BearNovelWebsiteApi.Services
 {
@@ -19,6 +17,115 @@ namespace BearNovelWebsiteApi.Services
         {
             _context = context;
             _cache = cache;
+        }
+
+        /// <summary>
+        /// 取得所有小說並處理點讚信息
+        /// </summary>
+        /// <returns>包含所有小說及其點讚狀態的列表</returns>
+        public async Task<List<Novel>> GetAllNovelsAsync(int? userId)
+        {
+            var cacheKey = Constants.NovelCacheKey;
+            List<Novel> novels;
+
+            try
+            {
+                var cachedDataNovels = await _cache.GetStringAsync(cacheKey);
+                if (cachedDataNovels != null)
+                {
+                    // 從緩存中取得所有小說
+                    novels = JsonConvert.DeserializeObject<List<Novel>>(cachedDataNovels);
+                }
+                else
+                {
+                    // 從資料庫中獲取所有小說, 包括每個小說的作者
+                    novels = await _context.Novels
+                        .Where(n => !n.IsDeleted)
+                        .Include(n => n.User)
+                        .ToListAsync();
+
+                    var cacheOptions = new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Constants.NovelsCacheMinutes),
+                    };
+                    await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(novels), cacheOptions);
+                }
+
+                // 處理點讚信息
+                await SetLikeStatusForNovels(novels, userId);
+
+                return novels;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("取不到 novels", ex);
+            }
+        }
+
+        /// <summary>
+        /// 設置小說的點讚狀態
+        /// </summary>
+        /// <param name="novels">小說列表</param>
+        public async Task SetLikeStatusForNovels(List<Novel> novels, int? userId)
+        {
+            if (userId.HasValue && userId.Value > 0)
+            {
+                List<int> likedNovelIds = await GetNovelLikeStatus(userId.Value);
+
+                foreach (var novel in novels)
+                {
+                    novel.IsLiked = likedNovelIds.Contains(novel.NovelId);
+                }
+            }
+            else
+            {
+                foreach (var novel in novels)
+                {
+                    novel.IsLiked = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 獲取用戶點讚的小說ID列表
+        /// </summary>
+        /// <param name="userId">用戶ID</param>
+        /// <returns>用戶點讚的小說ID列表</returns>
+        public async Task<List<int>> GetNovelLikeStatus(int userId)
+        {
+            var cacheKeyLikes = $"UserLikes_{userId}";
+            List<int> likedNovelIds;
+
+            try
+            {
+                var cachedLikesData = await _cache.GetStringAsync(cacheKeyLikes);
+
+                if (cachedLikesData != null)
+                {
+                    likedNovelIds = JsonConvert.DeserializeObject<List<int>>(cachedLikesData);
+                }
+                else
+                {
+                    // 獲取用戶點讚過的小說ID集合
+                    likedNovelIds = await _context.Likes
+                        .Where(l => l.UserId == userId)
+                        .Select(l => l.NovelId)
+                        .ToListAsync();
+
+                    var cacheOptions = new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30) // 過期時間
+                    };
+
+                    await _cache.SetStringAsync(cacheKeyLikes, JsonConvert.SerializeObject(likedNovelIds), cacheOptions);
+                }
+
+                return likedNovelIds;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("取不到 Novel like status", ex);
+            }        
         }
 
         /// <summary>
@@ -76,7 +183,7 @@ namespace BearNovelWebsiteApi.Services
             var serializedNovels = JsonConvert.SerializeObject(popularNovels);
             await _cache.SetStringAsync(cacheKey, serializedNovels, new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Constants.PopularNovelsCacheMinutes) // 快取過期時間, 緩存30分鐘
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Constants.NovelsCacheMinutes) // 快取過期時間, 緩存30分鐘
             });
 
             return popularNovels;

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Reflection.Emit;
 using static BearNovelWebsiteApi.Constants;
 
@@ -71,6 +72,20 @@ namespace BearNovelWebsiteApi.Data
             builder.Entity<Novel>()
                 .Property(n => n.IsEnding)
                 .HasDefaultValue(false); // 默認未完結
+
+            // 配置 NovelType 列
+            builder.Entity<Novel>()
+                .Property(n => n.NovelTypes)
+                .HasConversion(
+                     v => JsonConvert.SerializeObject(v, new JsonSerializerSettings
+                     {
+                         Formatting = Formatting.None // 禁用JSON格式化以節省空間
+                     }),
+                    v => JsonConvert.DeserializeObject<List<NovelType>>(v, new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore // 忽略JSON中的null值
+                    }) ?? new List<NovelType>()
+                ); // 如果反序列化結果為 null，則返回一個空的 List);
 
             // 配置 NovelView 表
             builder.Entity<NovelView>()

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using static BearNovelWebsiteApi.Constants;
 
 namespace BearNovelWebsiteApi.Models
 {
@@ -23,6 +24,8 @@ namespace BearNovelWebsiteApi.Models
         // 用於表示是否已點讚, 前端用, 不用回傳
         [NotMapped]
         public bool IsLiked { get; set; }
+
+        public List<NovelType> NovelTypes { get; set; } = new List<NovelType>();
 
         public User User { get; set; }
         public ICollection<NovelView> NovelViews { get; set; }

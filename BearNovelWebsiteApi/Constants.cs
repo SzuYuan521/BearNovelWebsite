@@ -13,6 +13,17 @@
         }
 
         /// <summary>
+        /// 小說的類型(用來篩選)
+        /// </summary>
+        public enum NovelType
+        {
+            Romance, // 言情
+            Ancient, // 古文
+        }
+
+        public static string NovelCacheKey = "AllNovels";
+
+        /// <summary>
         /// 小說刪除後保留天數
         /// </summary>
         public static int NovelDeleteTime = 7;
@@ -25,7 +36,7 @@
         /// <summary>
         /// 熱門小說緩存時間
         /// </summary>
-        public static int PopularNovelsCacheMinutes = 30;
+        public static int NovelsCacheMinutes = 30;
 
         /// <summary>
         /// 日榜更新間隔時間

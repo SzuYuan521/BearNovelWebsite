@@ -4,7 +4,10 @@ using BearNovelWebsiteApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using System.Security.Claims;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace BearNovelWebsiteApi.Controllers
 {
@@ -14,11 +17,13 @@ namespace BearNovelWebsiteApi.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly NovelService _novelService;
+        private readonly IDistributedCache _cache;
 
-        public NovelsController(ApplicationDbContext context, NovelService novelService)
+        public NovelsController(ApplicationDbContext context, NovelService novelService, IDistributedCache cache)
         {
             _context = context;
             _novelService = novelService;
+            _cache = cache;
         }
 
         /// <summary>
@@ -28,34 +33,26 @@ namespace BearNovelWebsiteApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetNovels()
         {
-            // 從資料庫中獲取所有小說, 過濾掉軟刪除的小說, 包括每個小說的作者(關聯User)
-            var novels = await _context.Novels.Where(n => !n.IsDeleted).Include(n => n.User).ToListAsync();
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            List<Novel> novels;
 
-            // 如果用戶未登錄，不需要檢查點讚記錄
-            if (int.TryParse(userIdClaim, out var userId) && userId > 0)
+            try
             {
-                // 獲取用戶點讚過的小說ID集合
-                var likedNovelIds = await _context.Likes
-                    .Where(l => l.UserId == userId)
-                    .Select(l => l.NovelId)
-                    .ToListAsync();
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                int? userId = int.TryParse(userIdClaim, out var id) ? (int?)id : null;
 
-                // 為每個小說添加是否已點讚的標誌
-                foreach (var novel in novels)
-                {
-                    novel.IsLiked = likedNovelIds.Contains(novel.NovelId);
-                }
+                novels = await _novelService.GetAllNovelsAsync(userId);
+
+                return Ok(novels);
             }
-            else
-            {
-                // 用戶未登入，所有小說的 IsLiked 屬性設置為 false
-                foreach (var novel in novels)
-                {
-                    novel.IsLiked = false;
-                }
+            catch (Exception ex) {
+
+                // 返回 500 Internal Server Error & 詳細錯誤
+                return Problem(
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "無法獲取小說列表"
+                );
             }
-            return Ok(novels);
         }
 
         /// <summary>
@@ -63,43 +60,31 @@ namespace BearNovelWebsiteApi.Controllers
         /// </summary>
         /// <param name="userId">userId</param>
         /// <returns>指定作者的小說data</returns>
-        [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetNovelsByUserId([FromRoute] int userId)
+        [HttpGet("user/{authorId}")]
+        public async Task<IActionResult> GetNovelsByUserId([FromRoute] int authorId)
         {
-            var novels = await _context.Novels
-                .Where(n => n.AuthorId == userId && !n.IsDeleted) // 根據UserId過濾並排除已刪除的小說
-                .Include(n => n.User) // 包含User信息
-                .ToListAsync();
+            List<Novel> novels;
 
-
-            // 檢查用戶是否已登入
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            // 如果用戶已登入，獲取點讚信息
-            if (int.TryParse(userIdClaim, out var id) && id > 0)
+            try
             {
-                // 獲取用戶點讚過的小說ID集合
-                var likedNovelIds = await _context.Likes
-                    .Where(l => l.UserId == id)
-                    .Select(l => l.NovelId)
-                    .ToListAsync();
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                int? userId = int.TryParse(userIdClaim, out var id) ? (int?)id : null;
 
-                // 為每個小說添加是否已點讚的標誌
-                foreach (var novel in novels)
-                {
-                    novel.IsLiked = likedNovelIds.Contains(novel.NovelId);
-                }
+                novels = await _novelService.GetAllNovelsAsync(userId);
+
+                var filteredNovels = novels.Where(n => n.AuthorId == authorId);
+
+                return Ok(filteredNovels);
             }
-            else
+            catch (Exception ex)
             {
-                // 用戶未登入，所有小說的 IsLiked 屬性設置為 false
-                foreach (var novel in novels)
-                {
-                    novel.IsLiked = false;
-                }
+                // 返回 500 Internal Server Error & 詳細錯誤
+                return Problem(
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: $"無法獲取作者為{authorId}的小說列表"
+                );
             }
-
-            return Ok(novels);
         }
 
         /// <summary>
@@ -110,50 +95,42 @@ namespace BearNovelWebsiteApi.Controllers
         [HttpGet("authorName/{nickName}")]
         public async Task<IActionResult> GetNovelsByNickName([FromRoute] string nickName)
         {
-            // 先找到該User
-            var user = await _context.Users
-                .Where(u => u.NickName == nickName)
-                .FirstOrDefaultAsync();
+            List<Novel> novels;
 
-            if(user == null) return NotFound("找不到該作者");
-
-            var novels = await _context.Novels
-                .Where(n => n.AuthorId == user.Id && !n.IsDeleted) // 根據UserId過濾並排除已刪除的小說
-                .Include(n => n.User) // 包含User信息
-                .ToListAsync();
-
-            // 檢查用戶是否已登入
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            // 如果用戶已登入，獲取點讚信息
-            if (int.TryParse(userIdClaim, out var userId) && userId > 0)
+            try
             {
-                // 獲取用戶點讚過的小說ID集合
-                var likedNovelIds = await _context.Likes
-                    .Where(l => l.UserId == userId)
-                    .Select(l => l.NovelId)
-                    .ToListAsync();
+                var authorUserId = await _context.Users
+                    .Where(u => u.NickName == nickName)
+                    .Select(u => u.Id)
+                    .FirstOrDefaultAsync();
 
-                // 為每個小說添加是否已點讚的標誌
-                foreach (var novel in novels)
+                if (authorUserId == 0)
                 {
-                    novel.IsLiked = likedNovelIds.Contains(novel.NovelId);
+                    return NotFound($"未找到暱稱為 {nickName} 的用戶");
                 }
+
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                int? userId = int.TryParse(userIdClaim, out var id) ? (int?)id : null;
+
+                novels = await _novelService.GetAllNovelsAsync(userId);
+
+                var filteredNovels = novels.Where(n => n.AuthorId == authorUserId).ToList();
+
+                return Ok(filteredNovels);
             }
-            else
+            catch (Exception ex)
             {
-                // 用戶未登入，所有小說的 IsLiked 屬性設置為 false
-                foreach (var novel in novels)
-                {
-                    novel.IsLiked = false;
-                }
+                // 返回 500 Internal Server Error & 詳細錯誤
+                return Problem(
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: $"無法獲取作者為{nickName}的小說列表"
+                );
             }
-
-            return Ok(novels);
         }
 
         /// <summary>
-        /// 根據關鍵字搜尋文章 (搜尋用)
+        /// 根據關鍵字搜尋小說 (搜尋用)
         /// </summary>
         /// <param name="keywords"></param>
         /// <returns>符合關鍵字的小說</returns>
@@ -165,38 +142,55 @@ namespace BearNovelWebsiteApi.Controllers
                 return BadRequest("關鍵字不能是空的");
             }
 
-            var novels = await _context.Novels
-                .Where(n => n.Title.Contains(keywords) && !n.IsDeleted) // 根據關鍵字查找標題並排除已刪除的小說
-                .ToListAsync();
+            List<Novel> novels;
 
-            // 檢查用戶是否已登入
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            // 如果用戶已登入，獲取點讚信息
-            if (int.TryParse(userIdClaim, out var userId) && userId > 0)
+            try
             {
-                // 獲取用戶點讚過的小說ID集合
-                var likedNovelIds = await _context.Likes
-                    .Where(l => l.UserId == userId)
-                    .Select(l => l.NovelId)
-                    .ToListAsync();
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                int? userId = int.TryParse(userIdClaim, out var id) ? (int?)id : null;
 
-                // 為每個小說添加是否已點讚的標誌
-                foreach (var novel in novels)
-                {
-                    novel.IsLiked = likedNovelIds.Contains(novel.NovelId);
-                }
+                novels = await _novelService.GetAllNovelsAsync(userId);
+
+                var filteredNovels = novels.Where(n => n.Title.Contains(keywords));
+
+                return Ok(filteredNovels);
             }
-            else
+            catch (Exception ex)
             {
-                // 用戶未登入，所有小說的 IsLiked 屬性設置為 false
-                foreach (var novel in novels)
-                {
-                    novel.IsLiked = false;
-                }
+                // 返回 500 Internal Server Error & 詳細錯誤
+                return Problem(
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: $"無法獲取關鍵字為{keywords}的小說列表"
+                );
             }
+        }
 
-            return Ok(novels);
+        [HttpGet("type/{type}")]
+        public async Task<IActionResult> GetNovelsByType([FromRoute] Constants.NovelType type)
+        {
+            List<Novel> novels;
+
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                int? userId = int.TryParse(userIdClaim, out var id) ? (int?)id : null;
+
+                novels = await _novelService.GetAllNovelsAsync(userId);
+
+                var filteredNovels = novels.Where(n => n.NovelTypes.Contains(type));
+
+                return Ok(filteredNovels);
+            }
+            catch (Exception ex)
+            {
+                // 返回 500 Internal Server Error & 詳細錯誤
+                return Problem(
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: $"無法獲取{type}小說列表"
+                );
+            }
         }
 
         /// <summary>
@@ -229,6 +223,8 @@ namespace BearNovelWebsiteApi.Controllers
 
             await  _context.Novels.AddAsync(novel);
             await _context.SaveChangesAsync();
+
+            await _cache.RemoveAsync(Constants.NovelCacheKey);
 
             return CreatedAtAction(nameof(GetNovels), new { id = novel.NovelId}, novel);
         }
@@ -268,6 +264,8 @@ namespace BearNovelWebsiteApi.Controllers
             _context.Update(existingNovel);
             await _context.SaveChangesAsync();
 
+            await _cache.RemoveAsync(Constants.NovelCacheKey);
+
             // 返回 204 NoContent
             return NoContent();
         }
@@ -295,6 +293,8 @@ namespace BearNovelWebsiteApi.Controllers
             _context.Update(novel);
             await _context.SaveChangesAsync();
 
+            await _cache.RemoveAsync(Constants.NovelCacheKey);
+
             return NoContent(); 
         }
 
@@ -316,11 +316,14 @@ namespace BearNovelWebsiteApi.Controllers
 
             // 檢查用戶是否點過讚
             var existingLike = await _context.Likes.FirstOrDefaultAsync(l => l.NovelId == id && l.UserId == userId);
+            bool isLiked = false;
+
             if (existingLike != null)
             {
                 // 如果已經點過讚, 則取消點讚
                 _context.Likes.Remove(existingLike);
                 novel.LikeCount--;
+                isLiked = false;
             }
             else
             {
@@ -332,11 +335,30 @@ namespace BearNovelWebsiteApi.Controllers
                     CreateAt = DateTime.Now
                 });
                 novel.LikeCount++;
+                isLiked = true;
             }
 
             // 指定 novel 實體的 LikeCount 屬性為已修改
             _context.Entry(novel).Property(n => n.LikeCount).IsModified = true;
             await _context.SaveChangesAsync();
+
+            // 更新user點讚信息緩存
+            var cacheKeyLikes = $"UserLikes_{userId}";
+            var likedNovelIds = await _novelService.GetNovelLikeStatus(userId);
+            if (isLiked)
+            {
+                likedNovelIds.Add(id);
+            }
+            else
+            {
+                likedNovelIds.Remove(id);
+            }
+
+            var cacheOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Constants.NovelsCacheMinutes)
+            };
+            await _cache.SetStringAsync(cacheKeyLikes, JsonConvert.SerializeObject(likedNovelIds), cacheOptions);
 
             return Ok(new { LikeCount = novel.LikeCount });
         }
