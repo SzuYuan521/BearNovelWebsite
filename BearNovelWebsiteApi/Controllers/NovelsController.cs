@@ -108,7 +108,7 @@ namespace BearNovelWebsiteApi.Controllers
         /// <param name="nickName">暱稱</param>
         /// <returns>特定作者的小說</returns>
         [HttpGet("authorName/{nickName}")]
-        public async Task<IActionResult> GetNovelsByUserName([FromRoute] string nickName)
+        public async Task<IActionResult> GetNovelsByNickName([FromRoute] string nickName)
         {
             // 先找到該User
             var user = await _context.Users
