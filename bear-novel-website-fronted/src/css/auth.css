@@ -32,6 +32,40 @@
   /*box-shadow: 0 3px 6px #efeff1;*/
 }
 
+.register-page-body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background: url("../../public/img/login-background.png") no-repeat center
+    center fixed;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.register-page {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 10px;
+}
+
+.register-box {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  padding: 30px;
+  border-radius: 12px;
+  /*box-shadow: 0 3px 6px #efeff1;*/
+}
+
 h2 {
   color: #cb8a90;
   text-align: center;
@@ -145,6 +179,51 @@ i {
 
 .registration-tip {
   color: #6e6e6e;
+}
+
+/* 標記欄位錯誤的樣式 */
+.input-container {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.input-error {
+  border-color: red;
+  font-size: 1rem;
+}
+
+/* 錯誤符號的樣式 */
+.error-icon {
+  position: absolute;
+  left: 10px;
+  bottom: -1.8rem;
+  color: red;
+  font-size: 1rem;
+  transition: color 0.3s ease; /* 過渡效果 */
+}
+
+.success-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.success-page h1 {
+  color: #cb8a90;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 50px;
+}
+
+.success-page p {
+  text-align: center;
+  padding: 10px;
+}
+
+.success-page .btn-primary {
+  padding: 10px 30px;
 }
 
 @media (max-width: 768px) {

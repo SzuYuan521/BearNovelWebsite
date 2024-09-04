@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import NavbarComponent from "./components/NavbarComponent";
+import Home from "./components/Home";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Home from "./components/Home";
+import SuccessPage from "./components/SuccessPage";
 import Logout from "./components/Logout"; // 引入 Logout 組件
 import Agreement from "./components/Agreement";
 import PrivacyPolicy from "./components/PrivacyPolicy";
@@ -64,6 +65,7 @@ function App() {
           <Route path="/" element={<Home user={user} />} />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/success" element={<SuccessPage />} />
           <Route path="/logout" element={<Logout onLogout={handleLogout} />} />
           <Route path="/terms" element={<Agreement />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
