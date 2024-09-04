@@ -1,0 +1,141 @@
+.login-page-body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background: url("../../public/img/login-background.png") no-repeat center
+    center fixed;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.login-page {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 10px;
+}
+
+.login-box {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  padding: 30px;
+  border-radius: 12px;
+  /*box-shadow: 0 3px 6px #efeff1;*/
+}
+
+h2 {
+  color: #cb8a90;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.auth-input {
+  width: 100%;
+  max-width: 360px;
+  height: 45px;
+  border: 1px solid #ecd4d4;
+  border-radius: 6px;
+  padding: 6px 12px;
+}
+
+.auth-input:focus {
+  border-color: #cb8a90; /* 選中時邊框顏色變化 */
+  outline: none; /* 去掉默認的藍色輪廓 */
+  box-shadow: 0 0 5px #cb8a9080; /* 增加陰影效果，使選中狀態更顯眼 */
+  background-color: #fefefe; /* 改變背景色 */
+}
+
+.btn-primary {
+  background: linear-gradient(to right, #f3b6b6, #cc767f);
+  border: none;
+  border-radius: 30px;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+/* 隱藏原始的 checkbox */
+.terms-container input[type="checkbox"] {
+  position: absolute; /* 使 checkbox 脫離正常 Normal flow */
+  opacity: 0;
+  cursor: pointer;
+}
+
+.terms-container label {
+  font-size: 1rem;
+  color: #6e6e6e;
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  align-items: center;
+  /* display: inline-flex;*/
+}
+
+.terms-link {
+  color: #cc767f;
+}
+
+/* checkbox 的外觀 */
+.terms-container label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 55%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid #6e6e6e;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+/* 勾選後的樣式 */
+.terms-container input[type="checkbox"]:checked + label::before {
+  background-color: #cc767f; /* 勾選後背景顏色為粉色 */
+  border-color: #cc767f; /* 勾選後邊框顏色為粉色 */
+}
+
+/* 勾選後的勾選符號 */
+.terms-container input[type="checkbox"]:checked + label::after {
+  content: "✔";
+  position: absolute;
+  left: 5px;
+  top: 45%;
+  transform: translateY(-40%);
+  color: #ffffff; /* 勾選符號顏色 */
+  font-size: 15px;
+}
+
+@media (max-width: 768px) {
+  .login-page {
+    justify-content: center; /* 手機顯示時居中 */
+    padding: 0; /* 移除邊距以確保內容居中 */
+  }
+
+  .login-box {
+    width: 90%; /* 在小螢幕上設定為 90% 寬度 */
+    padding: 20px; /* 減少內邊距 */
+  }
+
+  .auth-input {
+    width: 100%;
+  }
+
+  .btn-primary {
+    width: 100%; /* 使按鈕在小螢幕上擴展為全寬 */
+  }
+}

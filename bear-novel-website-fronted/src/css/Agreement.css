@@ -1,0 +1,27 @@
+.agreement-container {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 800px;
+}
+
+h1 {
+  padding: 10px;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+ol {
+  margin-left: 20px;
+}
+
+p {
+  margin-top: 1rem;
+}

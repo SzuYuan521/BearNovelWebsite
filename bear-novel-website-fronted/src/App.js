@@ -5,11 +5,14 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
 import Logout from "./components/Logout"; // 引入 Logout 組件
+import Agreement from "./components/Agreement";
+import PrivacyPolicy from "./components/PrivacyPolicy";
 import { getUserInfo } from "./api/user-api";
 
 function App() {
   // 定義 isLoggedIn 狀態, 追蹤使用者是否已登入
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   // 定義 user 狀態, 用於儲存使用者資訊
   const [user, setUser] = useState(null);
 
@@ -62,6 +65,8 @@ function App() {
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/logout" element={<Logout onLogout={handleLogout} />} />
+          <Route path="/terms" element={<Agreement />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         </Routes>
       </div>
     </Router>
