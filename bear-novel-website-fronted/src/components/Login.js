@@ -10,6 +10,7 @@ function Login({ onLogin }) {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isChecked, setIsChecked] = useState(false); // 勾選框狀態
+  const [passwordVisible, setPasswordVisible] = useState(false); // 密碼顯示狀態
   const navigate = useNavigate();
 
   // 使用 useEffect 在 Login 組件加載時給 body 設置背景樣式
@@ -47,13 +48,24 @@ function Login({ onLogin }) {
             value={userNameOrEmail}
             onChange={(e) => setUserNameOrEmail(e.target.value)} // 更新用戶名或電子郵件
           />
-          <input
-            type="password"
-            className="auth-input mt-3 mb-4"
-            placeholder="密碼"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)} // 更新密碼
-          />
+          <div className="password-container mb-4">
+            <input
+              type={passwordVisible ? "text" : "password"}
+              className="auth-input mt-3 mb-4"
+              placeholder="密碼"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)} // 更新密碼
+            />
+            <button
+              type="button"
+              className="password-toggle-btn"
+              onClick={() => setPasswordVisible(!passwordVisible)} // 切換密碼顯示狀態
+            >
+              <i
+                className={`bi ${passwordVisible ? "bi-eye-slash" : "bi-eye"}`}
+              ></i>
+            </button>
+          </div>
           <div className="terms-container mt-4 mb-4">
             <input
               type="checkbox"

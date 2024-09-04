@@ -67,6 +67,29 @@ h2 {
   opacity: 0.9;
 }
 
+.password-container {
+  position: relative;
+}
+
+.auth-input {
+  padding-right: 40px; /* 給圖標留出空間 */
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 45%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem; /* 調整圖標大小 */
+}
+
+i {
+  color: #cb8a90;
+}
+
 /* 隱藏原始的 checkbox */
 .terms-container input[type="checkbox"] {
   position: absolute; /* 使 checkbox 脫離正常 Normal flow */
