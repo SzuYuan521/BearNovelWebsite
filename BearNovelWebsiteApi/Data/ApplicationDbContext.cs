@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
 using System.Reflection.Emit;
 using static BearNovelWebsiteApi.Constants;
@@ -42,6 +43,12 @@ namespace BearNovelWebsiteApi.Data
             // 設定 IdentityRoleClaim 的主鍵
             builder.Entity<IdentityRoleClaim<int>>()
                 .HasKey(rc => rc.Id);
+
+            // 設置 UserName
+            builder.Entity<User>()
+                .Property(u => u.UserName)
+                .HasMaxLength(20)
+                .IsRequired();
 
             // 設置 Role 的預設值為 User 和 型別轉換
             builder.Entity<User>()
@@ -84,8 +91,13 @@ namespace BearNovelWebsiteApi.Data
                     v => JsonConvert.DeserializeObject<List<NovelType>>(v, new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Ignore // 忽略JSON中的null值
-                    }) ?? new List<NovelType>()
-                ); // 如果反序列化結果為 null，則返回一個空的 List);
+                    }) ?? new List<NovelType>(), // 如果反序列化結果為 null，則返回一個空的 List
+                    new ValueComparer<List<NovelType>>(
+                        (c1, c2) => c1.SequenceEqual(c2), // 比較兩個 List 是否相等
+                        c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())), // 計算 HashCode
+                        c => c.ToList() // 複製 List 以確保一致性
+                    )
+                );
 
             // 配置 NovelView 表
             builder.Entity<NovelView>()

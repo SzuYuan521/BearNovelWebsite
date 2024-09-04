@@ -23,6 +23,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // 配置身份驗證
 builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 {
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.";  // 允許的用戶名字符
+
     // 密碼設置
     options.Password.RequireDigit = true; // 密碼必須包含數字
     options.Password.RequireLowercase = true; // 密碼必須包含小寫字母
