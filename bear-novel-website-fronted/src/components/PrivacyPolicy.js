@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import "../css/Agreement.css"; // 這裡引入自定義CSS文件
+import "../css/agreement.css"; // 這裡引入自定義CSS文件
 
 const PrivacyPolicy = () => {
   return (
