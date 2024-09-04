@@ -91,6 +91,12 @@ function Login({ onLogin }) {
           >
             登入
           </button>
+          <p className="registration-tip mt-4 text-center">
+            小熊小說網新讀者？
+            <a href="/register" className="terms-link">
+              立即註冊
+            </a>
+          </p>
           <p className="mt-3 text-danger">{message}</p>
         </div>
       </div>
