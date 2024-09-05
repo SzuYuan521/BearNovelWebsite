@@ -1,0 +1,48 @@
+.ad-banner {
+  position: relative;
+  width: 100vw;
+  height: 300px;
+  overflow: hidden;
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner-lines {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.line {
+  width: 24px;
+  height: 2px;
+  background-color: #ffffff;
+  cursor: pointer;
+  opacity: 0.7;
+  position: relative;
+}
+
+.line:hover {
+  background-color: #ecd4d4;
+}
+
+.line.active {
+  background-color: #cb8a90;
+}
+
+/* 使用偽元素来增加點擊區域 */
+.line::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 0px;
+  right: 0px;
+  bottom: -10px;
+}
