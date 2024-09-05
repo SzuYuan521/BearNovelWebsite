@@ -15,7 +15,7 @@ export const getNovels = async () => {
 };
 
 // 根據 UserId 取得該用戶的所有小說
-export const getNovelsByUser = async (userId) => {
+export const getNovelsByUserId = async (userId) => {
   try {
     const response = await axios.get(`${API_URL}/user/${userId}`, {
       withCredentials: true,
@@ -23,6 +23,45 @@ export const getNovelsByUser = async (userId) => {
     return response.data;
   } catch (error) {
     console.error("根據UserId獲取小說失敗: ", error);
+    throw error;
+  }
+};
+
+// 根據暱稱(作者名)取得該用戶的所有小說
+export const getNovelsByNickName = async (nickName) => {
+  try {
+    const response = await axios.get(`${API_URL}/authorName/${nickName}`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("根據作者名搜尋小說失敗", error);
+    throw error;
+  }
+};
+
+// 根據關鍵字搜尋小說
+export const getNovelsByTitleKeyWords = async (keywords) => {
+  try {
+    const response = await axios.get(`${API_URL}/keywords/${keywords}`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("根據關鍵字搜尋小說失敗", error);
+    throw error;
+  }
+};
+
+// 根據小說類型搜尋小說
+export const getNovelsByType = async (type) => {
+  try {
+    const response = await axios.get(`${API_URL}/type/${type}`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("根據小說類型搜尋小說失敗", error);
     throw error;
   }
 };
