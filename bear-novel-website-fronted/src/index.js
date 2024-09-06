@@ -7,13 +7,16 @@ import App from "./App"; // 引入應用程式的主要組件, 是應用的入�
 import "./css/global.css";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import { ModalProvider } from "./contexts/ModalContext";
 
 // React 18 的新渲染方式
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ModalProvider>
+        <App />
+      </ModalProvider>
     </Provider>
   </React.StrictMode>
 );
