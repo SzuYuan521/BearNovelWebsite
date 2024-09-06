@@ -62,7 +62,7 @@ const Register = () => {
     if (!nickName) {
       newErrors.nickName = "請輸入暱稱";
     } else if (nickName.length > 20) {
-      newErrors.nickName = "暱稱長度應為 10 字中文或 20 字英數字內";
+      newErrors.nickName = "暱稱長度應為 20 字元內";
     }
     if (!email) newErrors.email = "請輸入電子郵件";
     if (!password) {
@@ -102,7 +102,7 @@ const Register = () => {
             <input
               type="text"
               className="auth-input"
-              placeholder="暱稱 10 字中文或 20 字英數字內"
+              placeholder="暱稱 20 字元內"
               value={nickName}
               maxLength={20}
               onChange={(e) => setNickName(e.target.value)} // 更新暱稱
