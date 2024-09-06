@@ -66,13 +66,6 @@
   /*box-shadow: 0 3px 6px #efeff1;*/
 }
 
-h2 {
-  color: #cb8a90;
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
 .auth-input {
   width: 100%;
   max-width: 360px;
@@ -103,10 +96,6 @@ h2 {
 
 .password-container {
   position: relative;
-}
-
-.auth-input {
-  padding-right: 40px; /* 給圖標留出空間 */
 }
 
 .password-toggle-btn {
@@ -199,7 +188,6 @@ i {
   bottom: -1.8rem;
   color: red;
   font-size: 1rem;
-  transition: color 0.3s ease; /* 過渡效果 */
 }
 
 .success-page {
@@ -226,15 +214,80 @@ i {
   padding: 10px 30px;
 }
 
+/* 會員大頭照 */
+.profile-picture-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0 0 10px;
+}
+
+.profile-picture {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #cb8a90;
+  background-color: #ffffff;
+  object-fit: cover;
+  box-shadow: 0 0 5px #cb8a9080;
+}
+
+/* 選擇檔案按鈕樣式 */
+.custom-file-button {
+  background-color: #ffffff;
+  color: #cb8a90;
+  border: 1px solid #cb8a90;
+  border-radius: 30px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+  display: inline-block;
+}
+
+.custom-file-button:hover {
+  box-shadow: 0 0 5px #cb8a9080;
+}
+
+/* 自定義上傳按鈕樣式 */
+.submit-button {
+  background-color: #ffffff;
+  color: #cb8a90;
+  border: 1px solid #cb8a90;
+  border-radius: 30px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.submit-button:hover {
+  box-shadow: 0 0 5px #cb8a9080;
+}
+
 @media (max-width: 768px) {
-  .login-page {
-    justify-content: center; /* 手機顯示時居中 */
-    padding: 0; /* 移除邊距以確保內容居中 */
+  .login-page-body,
+  .register-page-body,
+  .login-container,
+  .register-container {
+    overflow: auto;
   }
 
-  .login-box {
+  .login-page,
+  .register-page {
+    display: flex;
+    justify-content: center; /* 手機顯示時居中 */
+    align-items: center; /* 垂直居中 */
+    height: auto;
+    padding: 0; /* 移除邊距以確保內容居中 */
+    overflow: auto;
+  }
+
+  .login-box,
+  .register-box {
     width: 90%; /* 在小螢幕上設定為 90% 寬度 */
     padding: 20px; /* 減少內邊距 */
+    box-sizing: border-box; /* 確保內邊距計算在寬度內 */
   }
 
   .auth-input {
@@ -243,5 +296,9 @@ i {
 
   .btn-primary {
     width: 100%; /* 使按鈕在小螢幕上擴展為全寬 */
+  }
+
+  .error-icon {
+    font-size: 0.7rem;
   }
 }

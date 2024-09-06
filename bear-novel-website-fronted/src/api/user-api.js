@@ -137,3 +137,21 @@ async function getWithToken(apiUrl, options = {}) {
     return response;
   }
 }
+
+// 上傳大頭照
+export const uploadProfilePicture = async (file) => {
+  const formData = new FormData();
+  formData.append("profilePicture", file);
+
+  try {
+    const response = await axios.post(
+      `${API_URL}/upload-profile-picture`,
+      formData,
+      { withCredentials: true }
+    );
+    return response;
+  } catch (error) {
+    console.error("上傳錯誤: ", error);
+    throw error;
+  }
+};

@@ -1,6 +1,8 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
+import SearchBar from "./SearchBar";
+import ProfilePicture from "./ProfilePicture";
 import "../css/navbar.css";
 
 // 導欄列組件
@@ -27,6 +29,10 @@ const NavbarComponent = ({ isLoggedIn, onLogout, user }) => {
         <Nav.Link as={Link} to="/" className="custom-nav-link">
           首頁
         </Nav.Link>
+        <Nav.Link as={Link} to="/" className="custom-nav-link">
+          分類
+        </Nav.Link>
+        <SearchBar />
         {!isLoggedIn && (
           <>
             <Nav.Link as={Link} to="/login" className="custom-nav-link">
@@ -38,15 +44,21 @@ const NavbarComponent = ({ isLoggedIn, onLogout, user }) => {
           </>
         )}
         {isLoggedIn && user && user.userName && (
-          <NavDropdown
-            title={user.nickName}
-            id="basic-nav-dropdown"
-            className="custom-nav-dropdown"
-          >
-            <NavDropdown.Item as={Link} to="/logout">
-              登出
-            </NavDropdown.Item>
-          </NavDropdown>
+          <>
+            <Nav.Link as={Link} to="/novel/create" className="custom-nav-link">
+              新增小說
+            </Nav.Link>
+            <ProfilePicture profilePicture={user.profilePicture} />
+            <NavDropdown
+              title={user.nickName}
+              id="basic-nav-dropdown"
+              className="custom-nav-dropdown"
+            >
+              <NavDropdown.Item as={Link} to="/logout">
+                登出
+              </NavDropdown.Item>
+            </NavDropdown>
+          </>
         )}
       </Nav>
     );

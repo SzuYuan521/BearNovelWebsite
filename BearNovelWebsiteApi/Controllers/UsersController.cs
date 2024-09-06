@@ -166,7 +166,18 @@ namespace BearNovelWebsiteApi.Controllers
                 }
             }
 
-            return Ok(new { user.Email, user.UserName, user.NickName });
+            // 如果用戶存在但沒有大頭照, 只返回其他用戶資料, 轉換圖片為 Base64 字符串避免轉成二進制數據
+            var profilePictureBase64 = user.ProfilePicture != null
+                ? Convert.ToBase64String(user.ProfilePicture)
+                : null;
+
+            // 確保根據儲存的 ContentType 動態設置圖片的 MIME 類型
+            var profilePictureMimeType = user.ProfilePictureContentType ?? "image/jpeg"; // 預設為 JPEG
+            var profilePicture = profilePictureBase64 != null
+                ? $"data:{profilePictureMimeType};base64,{profilePictureBase64}"
+                : null;
+
+            return Ok(new { user.Email, user.UserName, user.NickName, ProfilePicture = profilePicture });
         }
 
         /// <summary>
@@ -203,6 +214,54 @@ namespace BearNovelWebsiteApi.Controllers
             Debug.WriteLine($"newAccessToken : {newAccessToken}");
 
             return Ok(new { accessToken = newAccessToken });
+        }
+
+        /// <summary>
+        /// 上傳大頭照
+        /// </summary>
+        /// <param name="profilePicture"></param>
+        /// <returns></returns>
+        [HttpPost("upload-profile-picture")]
+        [RequestSizeLimit(2 * 1024 * 1024)] // 限制最大上傳大小為 2MB
+        public async Task<IActionResult> UploadProfilePicture([FromForm] IFormFile profilePicture)
+        {
+            // 取得當前已登入的用戶
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized(new { message = "User not found" });
+            }
+
+            var allowedTypes = new[] { "image/jpeg", "image/png"};
+            // 檢查文件是否存在且格式正確
+            if (profilePicture == null || profilePicture.Length == 0 || !allowedTypes.Contains(profilePicture.ContentType))
+            {
+                return BadRequest(new { message = "Invalid file" });
+            }
+
+            try
+            {
+                // 將圖片轉為二進制數據
+                using (var memoryStream = new MemoryStream())
+                {
+                    await profilePicture.CopyToAsync(memoryStream);
+                    user.ProfilePicture = memoryStream.ToArray();
+                    user.ProfilePictureContentType = profilePicture.ContentType; // 保存圖片的 MIME 類型
+                }
+
+                // 更新用戶資料
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    return Ok(new { message = "照片上傳成功" });
+                }
+
+                return BadRequest(result.Errors);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "上傳大頭照時出現錯誤 ", error = ex.Message });
+            }         
         }
     }
 }

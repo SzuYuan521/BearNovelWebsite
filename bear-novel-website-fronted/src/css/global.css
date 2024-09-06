@@ -1,3 +1,47 @@
 body {
   font-family: "Noto Sans TC", sans-serif; /* 使用 Noto Sans TC 思源黑體 */
 }
+
+h2 {
+  color: #cb8a90;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* 搜尋框 */
+.search-bar {
+  position: relative;
+  max-width: 340px;
+  margin: 0px 15px;
+}
+
+.search-input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #ecd4d4;
+  border-radius: 30px;
+  padding: 6px 50px 6px 12px;
+}
+
+.search-input:focus {
+  border-color: #cb8a90;
+  outline: none;
+  box-shadow: 0 0 5px #cb8a9080;
+  background-color: #fefefe;
+}
+
+.search-button {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.search-button img {
+  width: 35px;
+  height: 35px;
+}
