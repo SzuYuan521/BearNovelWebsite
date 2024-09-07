@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
+import useReducer from "./slices/userSlice";
 import likeReducer from "./slices/likeSlice";
 import novelReducer from "./slices/novelSlice";
 
 const store = configureStore({
   reducer: {
     // 指定 reducer, 用於處理 state 中不同部分的狀態
+    user: useReducer,
     likes: likeReducer, // 負責管理點讚相關的狀態
     novels: novelReducer, // 管理小說
   },

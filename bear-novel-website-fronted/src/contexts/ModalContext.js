@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useCallback } from "react";
 import GlobalModel from "../components/GlobalModel";
 
 const ModalContext = createContext();
@@ -11,21 +11,21 @@ export const ModalProvider = ({ children }) => {
     onButtonClick: () => {},
   });
 
-  const openModal = (title, context, onButtonClick) => {
+  const openModal = useCallback((title, context, onButtonClick) => {
     setModalState({
       isOpen: true,
       title,
       context,
       onButtonClick,
     });
-  };
+  }, []);
 
-  const closeModal = () => {
-    setModalState({
+  const closeModal = useCallback(() => {
+    setModalState((modalState) => ({
       ...modalState,
       isOpen: false,
-    });
-  };
+    }));
+  }, []);
 
   return (
     <ModalContext.Provider value={{ openModal, closeModal }}>

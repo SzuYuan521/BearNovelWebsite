@@ -1,14 +1,17 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import SearchBar from "./SearchBar";
 import ProfilePicture from "./ProfilePicture";
+import { useModal } from "../contexts/ModalContext";
 import "../css/navbar.css";
 
 // 導欄列組件
 const NavbarComponent = ({ isLoggedIn, onLogout, user }) => {
   // 獲取當前路由
   const location = useLocation();
+  const navigate = useNavigate();
+  const { openModal } = useModal();
 
   // 根據當前路由決定要顯示的導航內容
   const renderNavLinks = () => {
@@ -32,6 +35,21 @@ const NavbarComponent = ({ isLoggedIn, onLogout, user }) => {
         <Nav.Link as={Link} to="/" className="custom-nav-link">
           分類
         </Nav.Link>
+        <Nav.Link
+          as="span"
+          className="custom-nav-link"
+          onClick={() => {
+            if (isLoggedIn && user && user.userName) {
+              navigate("/creator");
+            } else {
+              openModal("請先登入", "登入會員後，享受更多會員福利!", () => {
+                navigate("/login");
+              });
+            }
+          }}
+        >
+          創作者中心
+        </Nav.Link>
         <SearchBar />
         {!isLoggedIn && (
           <>
@@ -45,19 +63,18 @@ const NavbarComponent = ({ isLoggedIn, onLogout, user }) => {
         )}
         {isLoggedIn && user && user.userName && (
           <>
-            <Nav.Link as={Link} to="/novel/create" className="custom-nav-link">
-              新增小說
-            </Nav.Link>
-            <ProfilePicture profilePicture={user.profilePicture} />
-            <NavDropdown
-              title={user.nickName}
-              id="basic-nav-dropdown"
-              className="custom-nav-dropdown"
-            >
-              <NavDropdown.Item as={Link} to="/logout">
-                登出
-              </NavDropdown.Item>
-            </NavDropdown>
+            <div className="d-flex align-items-center">
+              <ProfilePicture profilePicture={user.profilePicture} size={40} />
+              <NavDropdown
+                title={user.nickName}
+                id="basic-nav-dropdown"
+                className="custom-nav-dropdown ms-2"
+              >
+                <NavDropdown.Item as={Link} to="/logout">
+                  登出
+                </NavDropdown.Item>
+              </NavDropdown>
+            </div>
           </>
         )}
       </Nav>
@@ -77,7 +94,7 @@ const NavbarComponent = ({ isLoggedIn, onLogout, user }) => {
             alt="小熊小說網"
             className="d-inline-block align-top logo-image" // 使用自定義樣式類
           />
-          <span className="ms-2">小熊小說網</span>
+          <span className="ms-1">小熊小說網</span>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">

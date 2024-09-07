@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import NavbarComponent from "./components/NavbarComponent";
 import Home from "./components/Home";
@@ -6,51 +6,40 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import SuccessPage from "./components/SuccessPage";
 import Logout from "./components/Logout"; // 引入 Logout 組件
+import NovelForm from "./components/NovelForm"; // 新增/編輯文章
 import Agreement from "./components/Agreement";
 import PrivacyPolicy from "./components/PrivacyPolicy";
-import { getUserInfo } from "./api/user-api";
+import Creator from "./components/Creator";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser, logout } from "./redux/slices/userSlice";
 
 function App() {
+  const dispatch = useDispatch();
   // 定義 isLoggedIn 狀態, 追蹤使用者是否已登入
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn, user, status } = useSelector((state) => state.user);
 
-  // 定義 user 狀態, 用於儲存使用者資訊
-  const [user, setUser] = useState(null);
+  // useEffect(() => {
+  //   dispatch(getUser()); // 在start時獲取 user info
+  // }, [dispatch]);
 
   useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        // UserData處理
-        const userData = await getUserInfo();
-        setUser(userData);
-        console.log("User object:", userData);
-
-        // 設置為登入狀態, 方便UI處理
-        setIsLoggedIn(true);
-      } catch (error) {
-        setIsLoggedIn(false);
-        setUser(null);
-      }
-    };
-    checkLoginStatus(); // 檢查使用者狀態
-  }, []); // 確保此 effect 只在組件首次掛載時執行一次
+    if (!isLoggedIn && status === "idle") {
+      dispatch(getUser());
+    }
+  }, [dispatch, isLoggedIn, status]);
 
   // 登入後狀態更新
   const handleLogin = async () => {
     try {
-      const userData = await getUserInfo();
-      setUser(userData);
-      setIsLoggedIn(true);
+      dispatch(getUser());
     } catch (error) {
-      setIsLoggedIn(false);
-      setUser(null);
+      dispatch(logout());
     }
   };
 
   // 登出後狀態更新
   const handleLogout = async () => {
-    setUser(null);
-    setIsLoggedIn(false);
+    dispatch(logout());
   };
 
   return (
@@ -60,17 +49,88 @@ function App() {
         onLogout={handleLogout}
         user={user}
       />
-      <div className="container">
-        <Routes>
-          <Route path="/" element={<Home user={user} />} />
-          <Route path="/login" element={<Login onLogin={handleLogin} />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/success" element={<SuccessPage />} />
-          <Route path="/logout" element={<Logout onLogout={handleLogout} />} />
-          <Route path="/terms" element={<Agreement />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <div className="container-fluid" style={{ padding: "0" }}>
+              <Home user={user} />
+            </div>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <div className="container">
+              <Login onLogin={handleLogin} />
+            </div>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <div className="container">
+              <Register />
+            </div>
+          }
+        />
+        <Route
+          path="/success"
+          element={
+            <div className="container">
+              <SuccessPage />
+            </div>
+          }
+        />
+        <Route
+          path="/logout"
+          element={
+            <div className="container">
+              <Logout onLogout={handleLogout} />
+            </div>
+          }
+        />
+        <Route
+          path="/creator"
+          element={
+            <div className="container">
+              <Creator />
+            </div>
+          }
+        />
+        <Route
+          path="/novel/create"
+          element={
+            <div className="container">
+              <NovelForm />
+            </div>
+          }
+        />
+        <Route
+          path="/novel/edit/:id"
+          element={
+            <div className="container">
+              <NovelForm />
+            </div>
+          }
+        />
+        <Route
+          path="/terms"
+          element={
+            <div className="container">
+              <Agreement />
+            </div>
+          }
+        />
+        <Route
+          path="/privacy-policy"
+          element={
+            <div className="container">
+              <PrivacyPolicy />
+            </div>
+          }
+        />
+      </Routes>
     </Router>
   );
 }
