@@ -9,6 +9,7 @@ const NovelList = () => {
   const dispatch = useDispatch();
   const novels = useSelector((state) => state.novels.list);
   const novelStatus = useSelector((state) => state.novels.status);
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
   useEffect(() => {
     if (novelStatus === "idle") {
@@ -79,11 +80,13 @@ const NovelList = () => {
                   ></img>
                   <p className="view-count">{novel.viewCount}</p>
                 </div>
-                <LikeToggle
-                  novelId={novel.novelId}
-                  likeCount={novel.likeCount}
-                  onLikeChange={handleLikeChange}
-                />
+                {isLoggedIn && (
+                  <LikeToggle
+                    novelId={novel.novelId}
+                    likeCount={novel.likeCount}
+                    onLikeChange={handleLikeChange}
+                  />
+                )}
               </div>
             </div>
           </div>
