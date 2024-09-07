@@ -160,8 +160,8 @@ i {
   content: "✔";
   position: absolute;
   left: 5px;
-  top: 45%;
-  transform: translateY(-40%);
+  top: 50%;
+  transform: translateY(-50%);
   color: #ffffff; /* 勾選符號顏色 */
   font-size: 15px;
 }
@@ -223,8 +223,6 @@ i {
 }
 
 .profile-picture {
-  width: 40px;
-  height: 40px;
   border-radius: 50%;
   border: 1px solid #cb8a90;
   background-color: #ffffff;
