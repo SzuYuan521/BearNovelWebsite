@@ -1,0 +1,83 @@
+.creator-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+}
+
+.creator-user-info {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  gap: 10px;
+}
+
+.creator-user-name {
+  font-size: 1.2rem;
+}
+
+.creator-user-identity {
+  font-size: 0.8rem;
+  color: #cb8a90;
+}
+
+.creator-management-panel {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min-content;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  padding: 10px 0;
+  box-sizing: border-box;
+  align-items: center;
+}
+
+.creator-management-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  aspect-ratio: 1 / 1; /* 維持正圓形比例 */
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.creator-management-button:hover {
+  border: 1px solid #cb8a90;
+  box-shadow: 0 0 5px #cb8a9080;
+}
+
+.my-novels-button {
+  background-color: #fadcda;
+}
+
+.comments-button {
+  background-color: #ecd4d4;
+}
+
+.data-center-button {
+  background-color: #ffcec7;
+}
+
+.income-button {
+  background-color: #eeb8b8;
+}
+
+.my-novels-icon {
+  width: 40px;
+  height: 40px;
+}
+
+/* 寬螢幕佈局調整 (PC) */
+@media (min-width: 768px) {
+  .creator-container {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .creator-management-panel {
+    gap: 20px;
+  }
+}

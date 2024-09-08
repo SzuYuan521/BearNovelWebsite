@@ -78,7 +78,7 @@
 .auth-input:focus {
   border-color: #cb8a90; /* 選中時邊框顏色變化 */
   outline: none; /* 去掉默認的藍色輪廓 */
-  box-shadow: 0 0 5px #cb8a9080; /* 增加陰影效果，使選中狀態更顯眼 */
+  box-shadow: 0 0 5px #cb8a9080;
   background-color: #fefefe; /* 改變背景色 */
 }
 
