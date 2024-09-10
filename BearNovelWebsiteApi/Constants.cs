@@ -17,8 +17,22 @@
         /// </summary>
         public enum NovelType
         {
-            Romance, // 言情
-            Ancient, // 古文
+            Romance, // 戀愛言情
+            Ancient, // 古代
+            Doomsday, // 末日
+            ScienceFiction, // 科幻
+            Campus, // 校園
+            MartialArts, // 武俠修仙
+            System, // 系統
+            RichFamily, // 豪門
+            TimeTravel, // 穿越
+            Rebirth, // 重生
+            Suspense, // 懸疑
+            Supernatural, // 靈異
+            Imaginary, // 架空
+            BL, // 男同性戀
+            Lesbian, // 女同性戀
+            CuteBaby, // 萌寶
         }
 
         public static string NovelCacheKey = "AllNovels";
