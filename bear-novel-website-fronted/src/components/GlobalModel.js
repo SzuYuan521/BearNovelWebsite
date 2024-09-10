@@ -13,7 +13,7 @@ const GlobalModel = ({
   onButtonClick,
 }) => {
   const handleClick = () => {
-    // 如果 onButtonClick 存在則執行它，否則僅關閉 Modal
+    // 如果 onButtonClick 存在則執行它, 否則僅關閉 Modal
     if (onButtonClick) {
       onButtonClick();
     } else {

@@ -27,6 +27,19 @@ export const getNovelsByUserId = async (userId) => {
   }
 };
 
+// 根據 UserId 取得該用戶的所有小說
+export const getMyNovels = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/my-novels`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("獲取自己的小說失敗: ", error);
+    throw error;
+  }
+};
+
 // 根據暱稱(作者名)取得該用戶的所有小說
 export const getNovelsByNickName = async (nickName) => {
   try {
@@ -71,7 +84,7 @@ export const createNovel = async (novel) => {
   try {
     const response = await axios.post(
       `${API_URL}/`,
-      { NovelTitle: novel.Title, NovelDescription: novel.Description },
+      { NovelTitle: novel.Title, NovelTypes: novel.NovelTypes },
       {
         withCredentials: true,
       }

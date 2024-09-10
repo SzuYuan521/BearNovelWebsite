@@ -18,6 +18,9 @@
   border-radius: 6px;
   width: 80%;
   max-width: 500px;
+  max-height: 80vh;
+  margin: auto;
+  overflow-y: auto;
 }
 
 .modal-header {
@@ -50,4 +53,80 @@
 
 .modal-btn-primary:hover {
   opacity: 0.9;
+}
+
+/* 隱藏原始的 checkbox */
+.custom-container input[type="checkbox"] {
+  position: absolute; /* 使 checkbox 脫離正常 Normal flow */
+  opacity: 0;
+  cursor: pointer;
+}
+
+.custom-container label {
+  font-size: 1rem;
+  color: #000000;
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  align-items: center;
+}
+
+/* 自定義 checkbox 的外觀 */
+.custom-checkbox + label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 55%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid #cc767f;
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+/* 勾選後的樣式 */
+.custom-checkbox:checked + label::before {
+  background-color: #cc767f; /* 勾選後背景顏色為粉色 */
+  border-color: #cc767f; /* 勾選後邊框顏色為粉色 */
+}
+
+/* 勾選後的勾選符號 */
+.custom-checkbox:checked + label::after {
+  content: "✔";
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ffffff; /* 勾選符號顏色 */
+  font-size: 15px;
+}
+
+/* 分成兩排勾選框 */
+.custom-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+/* 對齊勾選框 */
+.custom-form-check {
+  display: flex;
+  align-items: center;
+}
+
+.novel-name-input {
+  width: 100%;
+  max-width: 400px;
+  height: 45px;
+  border: 1px solid #ecd4d4;
+  border-radius: 6px;
+  padding: 6px 12px;
+}
+
+.novel-name-input:focus {
+  border-color: #cb8a90; /* 選中時邊框顏色變化 */
+  outline: none; /* 去掉默認的藍色輪廓 */
+  box-shadow: 0 0 5px #cb8a9080;
+  background-color: #fefefe; /* 改變背景色 */
 }

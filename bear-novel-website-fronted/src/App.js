@@ -10,6 +10,7 @@ import NovelForm from "./components/NovelForm"; // 新增/編輯文章
 import Agreement from "./components/Agreement";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import Creator from "./components/Creator";
+import MyNovels from "./components/MyNovels";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, logout } from "./redux/slices/userSlice";
 
@@ -18,12 +19,9 @@ function App() {
   // 定義 isLoggedIn 狀態, 追蹤使用者是否已登入
   const { isLoggedIn, user, status } = useSelector((state) => state.user);
 
-  // useEffect(() => {
-  //   dispatch(getUser()); // 在start時獲取 user info
-  // }, [dispatch]);
-
   useEffect(() => {
     if (!isLoggedIn && status === "idle") {
+      console.log("getUser");
       dispatch(getUser());
     }
   }, [dispatch, isLoggedIn, status]);
@@ -31,6 +29,7 @@ function App() {
   // 登入後狀態更新
   const handleLogin = async () => {
     try {
+      console.log("getUser");
       dispatch(getUser());
     } catch (error) {
       dispatch(logout());
@@ -99,10 +98,10 @@ function App() {
           }
         />
         <Route
-          path="/novel/create"
+          path="/novel/my-novels"
           element={
-            <div className="container">
-              <NovelForm />
+            <div className="container-fluid" style={{ padding: "0" }}>
+              <MyNovels />
             </div>
           }
         />

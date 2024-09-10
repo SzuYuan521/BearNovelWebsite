@@ -1,3 +1,4 @@
+/*** Novel List ***/
 .novel-grid {
   display: flex;
   flex-direction: column;
@@ -43,7 +44,7 @@
   position: relative; /* 確保子元素定位正常 */
   overflow: hidden;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 6px 10px rgba(0, 0, 0, 0.19); /* 添加立體陰影效果 */
+  box-shadow: 0 4px 6px #cccccc, 0 6px 10px #cccccc; /* 添加立體陰影效果 */
   transition: transform 0.3s ease;
 }
 
@@ -100,6 +101,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  margin-bottom: 10px;
 }
 
 /* 連載狀態文字 */
@@ -108,6 +110,7 @@
   font-size: 0.8rem;
   color: #818181;
   white-space: nowrap;
+  margin-bottom: 10px;
 }
 
 /* 小說說明 */
@@ -131,7 +134,7 @@
 .serialized-icon {
   width: 25px;
   height: 25px;
-  margin: 0px 3px 13px 0px;
+  margin: 0px 3px 10px 0px;
 }
 
 .like-icon {
@@ -163,4 +166,107 @@
   font-size: 0.8rem;
   color: #adadad;
   margin: 0;
+}
+
+/*** 這裡開始是 CreateNovel ***/
+.my-novels-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.custom-card {
+  border: none;
+}
+
+.create-novel-btn {
+  width: 100%;
+  max-width: 250px;
+  background: linear-gradient(to right, #f3b6b6, #cc767f);
+  border: none;
+  border-radius: 30px;
+  padding: 10px;
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.create-novel-icon {
+  width: 20px;
+  height: 20px;
+  margin: 0 5px 0 0;
+}
+
+/* 小說資訊左側(主要放圖) */
+.novel-cover-image {
+  width: 100px;
+  height: 140px;
+  position: relative; /* 確保子元素定位正常 */
+  overflow: hidden;
+}
+
+/*** 這裡開始是Novel Form ***/
+.novel-form {
+  background-color: #efeff1; /* 表單背景顏色 */
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+  box-shadow: 0 4px 8px #e5e5e5;
+}
+
+.novel-form h2 {
+  color: #cb8a90; /* 標題顏色 */
+  margin-bottom: 20px;
+}
+
+.novel-form label {
+  display: block;
+  margin-bottom: 5px;
+  color: #ecd4d4; /* 標籤顏色 */
+}
+
+.novel-form input[type="text"],
+.novel-form input[type="number"],
+.novel-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cb8a90; /* 邊框顏色 */
+  border-radius: 4px;
+  background-color: #fff;
+  margin-bottom: 20px;
+}
+
+.novel-form textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.novel-form .ql-container {
+  border: 1px solid #cb8a90; /* Quill 編輯器邊框顏色 */
+  border-radius: 4px;
+  background-color: #fff; /* Quill 編輯器背景顏色 */
+  margin-bottom: 20px;
+}
+
+.novel-form .ql-toolbar {
+  border-bottom: 1px solid #cb8a90; /* Quill 編輯器工具條顏色 */
+}
+
+.novel-form .ql-editor {
+  min-height: 150px;
+}
+
+.novel-form button {
+  background-color: #cb8a90; /* 按鈕背景顏色 */
+  color: #fff; /* 按鈕文字顏色 */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.novel-form button:hover {
+  background-color: #ecd4d4; /* 按鈕 hover 背景顏色 */
 }

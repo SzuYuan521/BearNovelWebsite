@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../css/novel.css";
 import LikeToggle from "./LikeToggle";
+import NovelPopular from "./NovelPopular";
 import { useDispatch, useSelector } from "react-redux";
 import { getNovelList, updateLikeStatus } from "../redux/slices/novelSlice";
 
@@ -13,6 +14,7 @@ const NovelList = () => {
 
   useEffect(() => {
     if (novelStatus === "idle") {
+      console.log(novelStatus);
       dispatch(getNovelList());
     }
   }, [dispatch, novelStatus]);
@@ -66,20 +68,10 @@ const NovelList = () => {
                 </div>
               </div>
               <div className="novel-popular">
-                <div className="novel-popular-left">
-                  <img
-                    src="/img/ui/like-icon.png"
-                    alt="點讚數"
-                    className="like-icon"
-                  ></img>
-                  <p className="like-count">{novel.likeCount}</p>
-                  <img
-                    src="/img/ui/view-icon-2.png"
-                    alt="觀看數"
-                    className="view-icon"
-                  ></img>
-                  <p className="view-count">{novel.viewCount}</p>
-                </div>
+                <NovelPopular
+                  likeCount={novel.likeCount}
+                  viewCount={novel.viewCount}
+                />
                 {isLoggedIn && (
                   <LikeToggle
                     novelId={novel.novelId}

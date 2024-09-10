@@ -9,6 +9,12 @@ h2 {
   font-weight: bold;
 }
 
+h3 {
+  color: #000000;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
 /* 搜尋框 */
 .search-bar {
   position: relative;
@@ -44,4 +50,43 @@ h2 {
 .search-button img {
   width: 35px;
   height: 35px;
+}
+
+.dropdown-toggle::after {
+  display: none; /* 隱藏 bootstrap 預設 dropdown 箭頭樣式*/
+}
+
+.card {
+  position: relative; /* 确保卡片的定位是相对的 */
+  overflow: visible; /* 确保子元素不被裁剪 */
+}
+
+.dropdown-menu {
+  z-index: 1060;
+  top: 100%;
+  left: auto;
+  margin-top: 0.25rem;
+  transform: none;
+}
+
+.text-truncate {
+  overflow: hidden; /* 隱藏溢出的內容 */
+  text-overflow: ellipsis; /* 超出部分以省略號顯示 */
+}
+
+.custom-row {
+  width: 100%;
+  background: linear-gradient(to right, #efeff1, #ecd4d4);
+  padding: 20px 0;
+  margin: 0;
+}
+
+.custom-container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.custom-pink-text {
+  color: #cb8a90;
+  font-size: 1rem;
 }

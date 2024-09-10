@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleLike, setLikeStatus } from "../redux/slices/likeSlice";
+import {
+  toggleLike,
+  setLikeStatus,
+  setLikeCount,
+} from "../redux/slices/likeSlice";
 
 const LikeToggle = ({ novelId, likeCount, onLikeChange }) => {
   // 設置本地狀態 count, 初始值是傳入的likeCount
@@ -29,6 +33,7 @@ const LikeToggle = ({ novelId, likeCount, onLikeChange }) => {
 
       // 更新 Redux store 中的點讚狀態
       dispatch(setLikeStatus({ novelId, isLiked: newLikedStatus }));
+      dispatch(setLikeCount({ novelId, likeCount: newLikeCount }));
 
       console.log(`點讚狀態改變: ${newLikedStatus}`); // 記錄點讚狀態改變
       console.log(`新的點讚數: ${newLikeCount}`); // 記錄新的點讚數

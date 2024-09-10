@@ -1,20 +1,14 @@
 import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ProfilePicture from "./ProfilePicture";
-import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "../redux/slices/userSlice";
+import { useSelector } from "react-redux";
 import { useModal } from "../contexts/ModalContext";
 import "../css/creator.css";
 
 const Creator = () => {
-  const dispatch = useDispatch();
   const { isLoggedIn, user, userLoaded } = useSelector((state) => state.user);
   const { openModal } = useModal();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    dispatch(getUser());
-  }, [dispatch]);
 
   useEffect(() => {
     if (userLoaded && !isLoggedIn) {
@@ -41,7 +35,7 @@ const Creator = () => {
       {isLoggedIn && (
         <div className="creator-management-panel">
           <Link
-            to="/novel/create"
+            to="/novel/my-novels"
             className="creator-management-button my-novels-button"
           >
             <img

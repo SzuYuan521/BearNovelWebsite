@@ -20,12 +20,17 @@ const likeSlice = createSlice({
   name: "likes", // slice name
   initialState: {
     likedNovels: {}, // 初始狀態為empty obj, 未來以 novelId 為 key，是否點讚為 value
+    likeCounts: {},
   },
   reducers: {
     // 同步 action, 設置某個小說的點讚狀態
     setLikeStatus: (state, action) => {
       const { novelId, isLiked } = action.payload;
       state.likedNovels[novelId] = isLiked;
+    },
+    setLikeCount: (state, action) => {
+      const { novelId, likeCount } = action.payload;
+      state.likeCounts[novelId] = likeCount;
     },
   },
   extraReducers: (builder) => {
@@ -43,7 +48,7 @@ const likeSlice = createSlice({
 });
 
 // 導出 setLikeStatus action，以便在組件中使用
-export const { setLikeStatus } = likeSlice.actions;
+export const { setLikeStatus, setLikeCount } = likeSlice.actions;
 
 // 導出 reducer，以便在 store 中使用
 export default likeSlice.reducer;

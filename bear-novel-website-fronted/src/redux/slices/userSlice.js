@@ -13,7 +13,8 @@ const userSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.user = null; // 登出時清空 user 狀態
-      state.isLoggedIn = false; // 更新為未登入狀態。
+      state.isLoggedIn = false; // 更新為未登入狀態
+      state.status = "idle";
     },
   },
   extraReducers: (builder) => {
