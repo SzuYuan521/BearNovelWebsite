@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using System.Security.Claims;
+using static BearNovelWebsiteApi.Constants;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace BearNovelWebsiteApi.Controllers
@@ -88,6 +90,39 @@ namespace BearNovelWebsiteApi.Controllers
         }
 
         /// <summary>
+        /// 獲取當前使用者創建的所有小說
+        /// </summary>
+        /// <returns>當前使用者的小說列表</returns>
+        [HttpGet("my-novels")]
+        [Authorize]
+        public async Task<IActionResult> GetMyNovels()
+        {
+            List<Novel> novels;
+
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                int? userId = int.TryParse(userIdClaim, out var id) ? (int?)id : null;
+
+                novels = await _novelService.GetAllNovelsAsync(userId);
+
+                var filteredNovels = novels.Where(n => n.AuthorId == userId);
+
+                return Ok(filteredNovels);
+            }
+            catch (Exception ex)
+            {
+                // 返回 500 Internal Server Error & 詳細錯誤
+                return Problem(
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: $"無法獲取自己的小說"
+                );
+            }
+        }
+
+
+        /// <summary>
         /// 根據NickName獲取該User的所有小說 (搜尋用)
         /// </summary>
         /// <param name="nickName">暱稱</param>
@@ -166,6 +201,11 @@ namespace BearNovelWebsiteApi.Controllers
             }
         }
 
+        /// <summary>
+        /// 根據小說類型獲得小說列表
+        /// </summary>
+        /// <param name="type">NovelType</param>
+        /// <returns></returns>
         [HttpGet("type/{type}")]
         public async Task<IActionResult> GetNovelsByType([FromRoute] Constants.NovelType type)
         {
@@ -213,18 +253,52 @@ namespace BearNovelWebsiteApi.Controllers
                 return Unauthorized("用戶未登錄");
             }
 
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                return Unauthorized("找不到用戶");
+            }
+
+            List<NovelType> novelTypeList = new List<NovelType>();
+
+            foreach (var typeString in createData.NovelTypes)
+            {
+                if (Enum.TryParse(typeString, out NovelType result))
+                {
+                    novelTypeList.Add(result);
+                }
+                else
+                {
+                    Debug.WriteLine($"'{typeString}' 是無效的 NovelType");
+                }
+            }
+
             var novel = new Novel
             {
                 AuthorId = userId,
                 Title = createData.NovelTitle,
-                Description = createData.NovelDescription,
+                NovelTypes = novelTypeList,
+                User = user
             };
 
-
-            await  _context.Novels.AddAsync(novel);
-            await _context.SaveChangesAsync();
-
-            await _cache.RemoveAsync(Constants.NovelCacheKey);
+            try
+            {
+                await  _context.Novels.AddAsync(novel);
+                await _context.SaveChangesAsync();
+                await _cache.RemoveAsync(Constants.NovelCacheKey);
+            }
+            catch (DbUpdateException dbEx)
+            {
+                Debug.WriteLine($"資料庫更新錯誤: {dbEx.Message}");
+                Debug.WriteLine(dbEx.InnerException?.Message);
+                return StatusCode(500, "伺服器內部錯誤，請檢查資料庫配置。");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"新增小說時發生錯誤: {ex.Message}");
+                return StatusCode(500, "伺服器內部錯誤，請稍後再試");
+            }
 
             return CreatedAtAction(nameof(GetNovels), new { id = novel.NovelId}, novel);
         }
@@ -299,7 +373,7 @@ namespace BearNovelWebsiteApi.Controllers
         }
 
         /// <summary>
-        /// 點讚小說記錄
+        /// 點讚小說記錄 (之後要實作使用 Redis 緩存點讚數據,並定期將緩存數據同步到主數據庫)
         /// </summary>
         /// <param name="id">NovelId</param>
         /// <returns></returns>
@@ -311,7 +385,15 @@ namespace BearNovelWebsiteApi.Controllers
             if (!int.TryParse(userIdClaim, out var userId))
                 return Unauthorized("用戶未登錄");
 
-            var novel = await _context.Novels.FindAsync(id);
+            var cacheKey = Constants.NovelCacheKey;
+            var cachedDataNovels = await _cache.GetStringAsync(cacheKey);
+            if (cachedDataNovels == null)
+                return StatusCode(StatusCodes.Status500InternalServerError, "緩存數據丟失");
+
+
+            // var novel = await _context.Novels.FindAsync(id);
+            var novels = JsonConvert.DeserializeObject<List<Novel>>(cachedDataNovels);
+            var novel = novels.FirstOrDefault(n => n.NovelId == id);
             if (novel == null) return NotFound("Novel not found");
 
             // 檢查用戶是否點過讚
@@ -534,7 +616,7 @@ namespace BearNovelWebsiteApi.Controllers
     public class CreateNovelData
     {
         public string NovelTitle { get; set; }
-        public string NovelDescription { get; set; }
+        public List<string> NovelTypes { get; set; } = new List<string>();
     }
 
     public class UpdateNovelData

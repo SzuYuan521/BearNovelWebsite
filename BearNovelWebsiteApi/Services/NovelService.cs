@@ -44,6 +44,18 @@ namespace BearNovelWebsiteApi.Services
                         .Include(n => n.User)
                         .ToListAsync();
 
+                    // 獲取所有小說的點讚數量
+                    var novelLikeCounts = await _context.Likes
+                        .GroupBy(l => l.NovelId)
+                        .Select(g => new { NovelId = g.Key, LikeCount = g.Count() })
+                        .ToDictionaryAsync(x => x.NovelId, x => x.LikeCount);
+
+                    // 更新小說的點讚數量
+                    foreach (var novel in novels)
+                    {
+                        novel.LikeCount = novelLikeCounts.TryGetValue(novel.NovelId, out var count) ? count : 0;
+                    }
+
                     var cacheOptions = new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Constants.NovelsCacheMinutes),

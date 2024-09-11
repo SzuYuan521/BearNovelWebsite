@@ -8,7 +8,7 @@ namespace BearNovelWebsiteApi.Models
         public int NovelId { get; set; }
         public string Title { get; set;}
         public int AuthorId { get; set; }
-        public string Description { get; set;}
+        public string Description { get; set;} = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set;} = DateTime.Now;
         public bool IsDeleted { get; set; }
