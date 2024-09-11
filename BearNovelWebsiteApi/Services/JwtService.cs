@@ -54,7 +54,7 @@ namespace BearNovelWebsiteApi.Services
             }
 
             // 設置 Token 的過期時間
-            var expires = DateTime.UtcNow.AddDays(expireMinutes);
+            var expires = DateTime.UtcNow.AddMinutes(expireMinutes);
 
             // 創建 JwtSecurityToken 實例，設定發行者、受眾、Claims、過期時間和簽名憑證
             var token = new JwtSecurityToken(
