@@ -167,9 +167,20 @@ namespace BearNovelWebsiteApi.Controllers
             }
 
             // 如果用戶存在但沒有大頭照, 只返回其他用戶資料, 轉換圖片為 Base64 字符串避免轉成二進制數據
-            var profilePictureBase64 = user.ProfilePicture != null
-                ? Convert.ToBase64String(user.ProfilePicture)
-                : null;
+            string profilePictureBase64 = null;
+            try
+            {
+                if (user.ProfilePicture != null)
+                {
+                    profilePictureBase64 = Convert.ToBase64String(user.ProfilePicture);
+                }
+            }
+            catch (Exception ex)
+            {
+                // 記錄錯誤, 並且根據需要進行處理
+                Console.WriteLine($"錯誤: {ex.Message}");
+                throw ex;
+            }
 
             // 確保根據儲存的 ContentType 動態設置圖片的 MIME 類型
             var profilePictureMimeType = user.ProfilePictureContentType ?? "image/jpeg"; // 預設為 JPEG
@@ -194,7 +205,7 @@ namespace BearNovelWebsiteApi.Controllers
             // 如果refreshToken過期則返回 401 Unauthorized "token not found", 前端須重新處理登入
             if (string.IsNullOrEmpty(refreshToken))
             {
-                return Unauthorized("token not found");
+                return Unauthorized("refresh token not found");
             }
 
             // 生成新的 accessToken
