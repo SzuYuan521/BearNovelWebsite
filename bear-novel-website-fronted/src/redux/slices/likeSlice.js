@@ -1,4 +1,3 @@
-// redux/slices/likeSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toggleLikeNovel } from "../../api/novel-api";
 

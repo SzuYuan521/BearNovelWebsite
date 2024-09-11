@@ -1,12 +1,15 @@
 import axios from "axios";
+import axiosInstance from "./api";
 
 // 定義 Novel API 的基礎 URL
 const API_URL = "http://localhost:5052/api/novels";
+const NOVEL_URL = "/novels";
 
 // 取得所有小說
 export const getNovels = async () => {
+  console.log("getNovels");
   try {
-    const response = await axios.get(`${API_URL}`, { withCredentials: true });
+    const response = await axiosInstance.get(NOVEL_URL);
     return response.data;
   } catch (error) {
     console.error("獲取所有小說失敗: ", error);
@@ -27,12 +30,10 @@ export const getNovelsByUserId = async (userId) => {
   }
 };
 
-// 根據 UserId 取得該用戶的所有小說
+// 取得該登入用戶的所有小說
 export const getMyNovels = async () => {
   try {
-    const response = await axios.get(`${API_URL}/my-novels`, {
-      withCredentials: true,
-    });
+    const response = await axiosInstance.get(`${NOVEL_URL}/my-novels`);
     return response.data;
   } catch (error) {
     console.error("獲取自己的小說失敗: ", error);
@@ -82,13 +83,10 @@ export const getNovelsByType = async (type) => {
 // 創建新小說
 export const createNovel = async (novel) => {
   try {
-    const response = await axios.post(
-      `${API_URL}/`,
-      { NovelTitle: novel.Title, NovelTypes: novel.NovelTypes },
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axiosInstance.post(`${NOVEL_URL}/`, {
+      NovelTitle: novel.Title,
+      NovelTypes: novel.NovelTypes,
+    });
     return response.data;
   } catch (error) {
     console.error("Error creating novel:", error);
@@ -121,13 +119,7 @@ export const updateNovel = async (id, updatedNovel) => {
 // 刪除小說
 export const deleteNovel = async (id) => {
   try {
-    await axios.delete(
-      `${API_URL}/${id}`,
-      {},
-      {
-        withCredentials: true,
-      }
-    );
+    await await axiosInstance.delete(`${NOVEL_URL}/${id}`, {});
   } catch (error) {
     console.error("刪除小說失敗: ", error);
     throw error;
@@ -137,13 +129,7 @@ export const deleteNovel = async (id) => {
 // 點讚或取消點讚
 export const toggleLikeNovel = async (id) => {
   try {
-    const response = await axios.post(
-      `${API_URL}/${id}/like`,
-      {},
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axiosInstance.post(`${NOVEL_URL}/${id}/like`, {});
     return response.data;
   } catch (error) {
     console.error("點讚小說失敗: ", error);

@@ -9,15 +9,17 @@ import { getNovelList, updateLikeStatus } from "../redux/slices/novelSlice";
 const NovelList = () => {
   const dispatch = useDispatch();
   const novels = useSelector((state) => state.novels.list);
-  const novelStatus = useSelector((state) => state.novels.status);
+
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
   useEffect(() => {
+    dispatch(getNovelList());
+    /*
     if (novelStatus === "idle") {
       console.log(novelStatus);
       dispatch(getNovelList());
-    }
-  }, [dispatch, novelStatus]);
+    }*/
+  }, [dispatch]);
 
   const handleLikeChange = (novelId, newLikedStatus, newLikeCount) => {
     dispatch(

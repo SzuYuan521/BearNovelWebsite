@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosInstance from "./api";
 
 // 定義 User API 的基礎 URL
 const API_URL = "http://localhost:5052/api/users";
@@ -7,11 +8,7 @@ const API_URL = "http://localhost:5052/api/users";
 export async function register(userData) {
   try {
     // 發送 POST 請求進行註冊
-    const response = await axios.post(`${API_URL}/register`, userData, {
-      headers: {
-        "Content-Type": "application/json", // 設置請求標頭為 JSON 格式
-      },
-    });
+    const response = await axios.post(`${API_URL}/register`, userData);
     return response.data; // 返回後端響應的數據
   } catch (error) {
     console.error(
@@ -84,9 +81,7 @@ export const refreshToken = async (refreshToken) => {
 // 獲取UserData
 export const getUserInfo = async () => {
   try {
-    const response = await getWithToken(`${API_URL}/user`, {
-      withCredentials: true,
-    });
+    const response = await axiosInstance.get("/users/user");
     return response.data;
   } catch (error) {
     console.error("獲取用戶信息失敗:", error);
@@ -94,61 +89,23 @@ export const getUserInfo = async () => {
   }
 };
 
-async function getWithToken(apiUrl, options = {}) {
-  let response;
-  try {
-    response = await axios.get(apiUrl, options);
-    return response;
-  } catch (error) {
-    // Token 過期, 自動嘗試刷新
-    if (error.response && error.response.status === 401) {
-      switch (error.response.data.message) {
-        case "jwt not found":
-          console.log("token過期了, 自動嘗試刷新");
-          const refreshResponse = await axios.post(
-            `${API_URL}/refresh-token`,
-            {},
-            { withCredentials: true }
-          );
-
-          if (refreshResponse.status === 200) {
-            console.log("token 刷新成功, 重新發送請求");
-            // 重新發送原請求
-            response = await axios.get(apiUrl, options);
-          }
-          break;
-        case "token not found":
-          // jwt跟refreshToken都過期了
-          // 這裡之後加, 導入到重新登入或是首頁
-          break;
-        default:
-          console.error(
-            `Error: ${error.response ? error.response.status : error.message}`
-          );
-          break;
-      }
-    } else {
-      // 捕獲請求錯誤
-      console.error(
-        `Error: ${error.response ? error.response.status : error.message}`
-      );
-    }
-
-    return response;
-  }
-}
-
 // 上傳大頭照
 export const uploadProfilePicture = async (file) => {
   const formData = new FormData();
   formData.append("profilePicture", file);
 
   try {
+    // 添加攔截器(添加後尚未測試)
+    const response = await axiosInstance.post(
+      `${API_URL}/upload-profile-picture`,
+      formData
+    );
+    /*
     const response = await axios.post(
       `${API_URL}/upload-profile-picture`,
       formData,
       { withCredentials: true }
-    );
+    );*/
     return response;
   } catch (error) {
     console.error("上傳錯誤: ", error);
