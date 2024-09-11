@@ -153,6 +153,14 @@ const novelSlice = createSlice({
         novel.likeCount = likeCount;
       }
     },
+    resetNovelState: (state) => {
+      state.status = "idle";
+      state.userNovelsStatus = "idle";
+      state.myNovelsStatus = "idle";
+      state.nickNameNovelsStatus = "idle";
+      state.keyWordsNovelsStatus = "idle";
+      state.addNovelStatus = "idle";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -245,5 +253,5 @@ const novelSlice = createSlice({
   },
 });
 
-export const { updateLikeStatus } = novelSlice.actions;
+export const { updateLikeStatus, resetNovelState } = novelSlice.actions;
 export default novelSlice.reducer;

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getUserInfo } from "../../api/user-api";
+import { resetNovelState } from "./novelSlice";
 
 const userSlice = createSlice({
   name: "user",
@@ -39,6 +40,11 @@ const userSlice = createSlice({
 
 // 導出 action
 export const { logout } = userSlice.actions;
+
+export const logoutAndResetNovel = () => (dispatch) => {
+  dispatch(logout());
+  dispatch(resetNovelState());
+};
 
 export const getUser = createAsyncThunk(
   "user/getUser", // action type prefix

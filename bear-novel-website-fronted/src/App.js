@@ -12,7 +12,7 @@ import PrivacyPolicy from "./components/PrivacyPolicy";
 import Creator from "./components/Creator";
 import MyNovels from "./components/MyNovels";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser, logout } from "./redux/slices/userSlice";
+import { getUser, logoutAndResetNovel } from "./redux/slices/userSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -32,13 +32,13 @@ function App() {
       console.log("getUser");
       dispatch(getUser());
     } catch (error) {
-      dispatch(logout());
+      dispatch(logoutAndResetNovel());
     }
   };
 
   // 登出後狀態更新
   const handleLogout = async () => {
-    dispatch(logout());
+    dispatch(logoutAndResetNovel());
   };
 
   return (
