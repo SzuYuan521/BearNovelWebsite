@@ -119,9 +119,20 @@ export const updateNovel = async (id, updatedNovel) => {
 // 刪除小說
 export const deleteNovel = async (id) => {
   try {
-    await await axiosInstance.delete(`${NOVEL_URL}/${id}`, {});
+    await axiosInstance.delete(`${NOVEL_URL}/${id}`, {});
   } catch (error) {
     console.error("刪除小說失敗: ", error);
+    throw error;
+  }
+};
+
+// 檢查是否是小說作者
+export const checkAuthor = async (id) => {
+  try {
+    const response = await axiosInstance.get(`${NOVEL_URL}/${id}/check-author`);
+    return response.data;
+  } catch (error) {
+    console.error("你不是作者: ", error);
     throw error;
   }
 };
@@ -156,15 +167,18 @@ export const recordView = async (id) => {
 // 新增章節
 export const createChapter = async (id, chapter) => {
   try {
-    await axios.post(
-      `${API_URL}/${id}/chapters`,
-      { ChapterTitle: chapter.Title, ChapterContent: chapter.Content },
+    const response = await axiosInstance.post(
+      `${NOVEL_URL}/${id}/chapters`,
+      JSON.stringify(chapter.Title),
       {
-        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
     );
+    return response.data;
   } catch (error) {
-    console.log("新增章節失敗");
+    console.log("新增章節失敗:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -172,16 +186,10 @@ export const createChapter = async (id, chapter) => {
 // 編輯章節
 export const updateChapter = async (id, chapter) => {
   try {
-    await axios.put(
-      `${API_URL}/chapter/${id}`,
-      {
-        ChapterTitle: chapter.Title,
-        ChapterContent: chapter.Content,
-      },
-      {
-        withCredentials: true,
-      }
-    );
+    await axiosInstance.put(`${NOVEL_URL}/chapter/${id}`, {
+      ChapterTitle: chapter.title,
+      ChapterContent: chapter.content,
+    });
   } catch (error) {
     console.log("更新章節失敗");
     throw error;
@@ -204,10 +212,21 @@ export const deleteChapter = async (id) => {
   }
 };
 
-// 取得章節
+// 取得章節(chapterId)
 export const getChapter = async (id) => {
   try {
     await axios.get(`${API_URL}/chapter/${id}`);
+  } catch (error) {
+    console.log("取得章節失敗");
+    throw error;
+  }
+};
+
+// 取得某小說的所有章節(novelId)
+export const getAllChapters = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/${id}/all-chapters`);
+    return response.data;
   } catch (error) {
     console.log("取得章節失敗");
     throw error;
