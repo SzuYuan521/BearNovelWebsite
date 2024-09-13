@@ -242,7 +242,7 @@ namespace BearNovelWebsiteApi.Controllers
         [Authorize]
         public async Task<IActionResult> CreateNovel([FromBody] CreateNovelData createData)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -284,7 +284,7 @@ namespace BearNovelWebsiteApi.Controllers
 
             try
             {
-                await  _context.Novels.AddAsync(novel);
+                await _context.Novels.AddAsync(novel);
                 await _context.SaveChangesAsync();
                 await _cache.RemoveAsync(Constants.NovelCacheKey);
             }
@@ -300,7 +300,7 @@ namespace BearNovelWebsiteApi.Controllers
                 return StatusCode(500, "伺服器內部錯誤，請稍後再試");
             }
 
-            return CreatedAtAction(nameof(GetNovels), new { id = novel.NovelId}, novel);
+            return CreatedAtAction(nameof(GetNovels), new { id = novel.NovelId }, novel);
         }
 
         /// <summary>
@@ -369,7 +369,35 @@ namespace BearNovelWebsiteApi.Controllers
 
             await _cache.RemoveAsync(Constants.NovelCacheKey);
 
-            return NoContent(); 
+            return NoContent();
+        }
+
+        /// <summary>
+        /// 檢查用戶是不是該小說作者
+        /// </summary>
+        /// <param name="novelId"></param>
+        /// <returns></returns>
+        [HttpGet("{novelId}/check-author")]
+        public async Task<IActionResult> CheckAuthor(int novelId)
+        {
+            var novel = await _context.Novels.FindAsync(novelId);
+            if (novel == null)
+            {
+                return NotFound(); // Novel not found
+            }
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("userId無效"); // 無效的userId
+            }
+
+            if (novel.AuthorId != userId)
+            {
+                return Forbid("沒有權限刪除小說");
+            }
+
+            return Ok(new { isAuthor = true });
         }
 
         /// <summary>
@@ -385,6 +413,7 @@ namespace BearNovelWebsiteApi.Controllers
             if (!int.TryParse(userIdClaim, out var userId))
                 return Unauthorized("用戶未登錄");
 
+            // 從緩存中獲取小說資料
             var cacheKey = Constants.NovelCacheKey;
             var cachedDataNovels = await _cache.GetStringAsync(cacheKey);
             if (cachedDataNovels == null)
@@ -474,7 +503,7 @@ namespace BearNovelWebsiteApi.Controllers
         /// <returns>新章節的訊息</returns>
         [HttpPost("{novelId}/chapters")]
         [Authorize]
-        public async Task<IActionResult> CreateChapter(int novelId, [FromBody] ChapterData data)
+        public async Task<IActionResult> CreateChapter(int novelId, [FromBody] string chapterTitle)
         {
             // 確認小說是否存在
             var novel = await _context.Novels.FindAsync(novelId);
@@ -489,6 +518,11 @@ namespace BearNovelWebsiteApi.Controllers
                 return Forbid("沒有權限新增章節");
             }
 
+            if (string.IsNullOrEmpty(chapterTitle))
+            {
+                return BadRequest("章節標題是必填項。");
+            }
+
             // 根據小說的現有章節數量決定新章節的順序
             var existingChapters = await _context.Chapters
                 .Where(c => c.NovelId == novelId)
@@ -498,9 +532,9 @@ namespace BearNovelWebsiteApi.Controllers
             var chapter = new Chapter
             {
                 NovelId = novelId,
-                ChapterNumber = existingChapters.Count+1,
-                Title = data.ChapterTitle,
-                Content = data.ChapterContent,
+                ChapterNumber = existingChapters.Count + 1,
+                Title = chapterTitle,
+                Content = string.Empty,
             };
 
             // 新增章節
@@ -610,6 +644,13 @@ namespace BearNovelWebsiteApi.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "刪除章節時發生錯誤");
             }
+        }
+
+        [HttpGet("{novelId}/all-chapters")]
+        public async Task<IActionResult> GetAllChapters([FromRoute] int novelId)
+        {
+            var chapters = await _context.Chapters.Where(c=>c.NovelId == novelId).ToListAsync(); ;
+            return Ok(chapters);
         }
     }
 
