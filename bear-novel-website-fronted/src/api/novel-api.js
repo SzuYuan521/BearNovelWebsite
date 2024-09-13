@@ -67,19 +67,6 @@ export const getNovelsByTitleKeyWords = async (keywords) => {
   }
 };
 
-// 根據小說類型搜尋小說
-export const getNovelsByType = async (type) => {
-  try {
-    const response = await axios.get(`${API_URL}/type/${type}`, {
-      withCredentials: true,
-    });
-    return response.data;
-  } catch (error) {
-    console.error("根據小說類型搜尋小說失敗", error);
-    throw error;
-  }
-};
-
 // 創建新小說
 export const createNovel = async (novel) => {
   try {

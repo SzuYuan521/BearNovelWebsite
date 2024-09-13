@@ -202,38 +202,6 @@ namespace BearNovelWebsiteApi.Controllers
         }
 
         /// <summary>
-        /// 根據小說類型獲得小說列表
-        /// </summary>
-        /// <param name="type">NovelType</param>
-        /// <returns></returns>
-        [HttpGet("type/{type}")]
-        public async Task<IActionResult> GetNovelsByType([FromRoute] Constants.NovelType type)
-        {
-            List<Novel> novels;
-
-            try
-            {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                int? userId = int.TryParse(userIdClaim, out var id) ? (int?)id : null;
-
-                novels = await _novelService.GetAllNovelsAsync(userId);
-
-                var filteredNovels = novels.Where(n => n.NovelTypes.Contains(type));
-
-                return Ok(filteredNovels);
-            }
-            catch (Exception ex)
-            {
-                // 返回 500 Internal Server Error & 詳細錯誤
-                return Problem(
-                    detail: ex.Message,
-                    statusCode: StatusCodes.Status500InternalServerError,
-                    title: $"無法獲取{type}小說列表"
-                );
-            }
-        }
-
-        /// <summary>
         /// 創建新小說
         /// </summary>
         /// <param name="novel"></param>
