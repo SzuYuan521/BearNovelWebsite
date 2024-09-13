@@ -21,6 +21,8 @@ const CreateNovel = ({ isOpen, onRequestClose }) => {
     "Suspense",
     "Supernatural",
     "Imaginary",
+    "Funny",
+    "OnlineGames",
     "BL",
     "Lesbian",
     "CuteBaby",
@@ -39,6 +41,8 @@ const CreateNovel = ({ isOpen, onRequestClose }) => {
     "懸疑",
     "靈異",
     "架空",
+    "搞笑",
+    "網遊競技",
     "男同性戀",
     "女同性戀",
     "萌寶",
@@ -50,7 +54,7 @@ const CreateNovel = ({ isOpen, onRequestClose }) => {
   const [novelName, setNovelName] = useState("");
   const [checkedItems, setCheckedItems] = useState([]);
 
-  const maxSelection = 3; // 最多勾選數量
+  const maxSelection = 4; // 最多勾選數量
   const minSelection = 1; // 最少勾選數量
 
   const handleCheckboxChange = (event) => {

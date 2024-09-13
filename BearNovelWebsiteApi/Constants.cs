@@ -30,6 +30,8 @@
             Suspense, // 懸疑
             Supernatural, // 靈異
             Imaginary, // 架空
+            Funny, // 搞笑
+            OnlineGames, //網遊
             BL, // 男同性戀
             Lesbian, // 女同性戀
             CuteBaby, // 萌寶
