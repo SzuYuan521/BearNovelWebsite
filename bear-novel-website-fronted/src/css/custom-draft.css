@@ -1,0 +1,70 @@
+.draft-form {
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.draft-form label {
+  display: block;
+  margin: 10px 0px;
+  color: #cb8a90;
+}
+
+.draft-form input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cb8a90;
+  border-radius: 5px;
+  background-color: #fff;
+  margin-bottom: 20px;
+}
+
+.draft-form-editor {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cb8a90;
+  border-radius: 0px 0px 5px 5px;
+  background-color: #fff;
+  margin-bottom: 20px;
+}
+
+.draft-form input[type="text"]:focus,
+.draft-form-editor:focus {
+  border-color: #cb8a90;
+  outline: none;
+  box-shadow: 0 0 5px #cb8a9080;
+  background-color: #fefefe;
+}
+
+.draft-form-editor {
+  min-height: 200px;
+  resize: vertical;
+}
+
+.draft-toolbar {
+  background: linear-gradient(to right, #ecd4d4, #cb8a90);
+  padding: 10px;
+  border-radius: 5px 5px 0px 0px;
+}
+
+.draft-toolbar-button {
+  border: none;
+  background-color: transparent;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.draft-toolbar-icon {
+  color: #ffffff;
+  font-size: 1.2rem;
+}
+
+.draft-toolbar-button:hover {
+  text-shadow: 0 0 5px #cb8a9080;
+}
+
+.draft-form .submit-container {
+  display: flex;
+  justify-content: center; /* 将按钮水平居中 */
+}

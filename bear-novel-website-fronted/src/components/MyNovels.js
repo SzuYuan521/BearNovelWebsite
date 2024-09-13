@@ -115,7 +115,7 @@ const MyNovels = () => {
                     </Dropdown>
 
                     <Link
-                      to={`/novel/${novel.novelId}`}
+                      to={`/novel/my-novels/${novel.novelId}`}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
                       <Card.Body className="d-flex align-items-center m-0 p-0">

@@ -6,13 +6,14 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import SuccessPage from "./components/SuccessPage";
 import Logout from "./components/Logout"; // 引入 Logout 組件
-import NovelForm from "./components/NovelForm"; // 新增/編輯文章
 import Agreement from "./components/Agreement";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import Creator from "./components/Creator";
 import MyNovels from "./components/MyNovels";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, logoutAndResetNovel } from "./redux/slices/userSlice";
+import EditNovel from "./components/EditNovel";
+import EditChapter from "./components/EditChapter";
 
 function App() {
   const dispatch = useDispatch();
@@ -106,10 +107,18 @@ function App() {
           }
         />
         <Route
-          path="/novel/edit/:id"
+          path="/novel/my-novels/:novelId"
+          element={
+            <div className="container-fluid" style={{ padding: "0" }}>
+              <EditNovel />
+            </div>
+          }
+        />
+        <Route
+          path="/novel/my-novels/:novelId/edit-chapter/:chapterId"
           element={
             <div className="container">
-              <NovelForm />
+              <EditChapter />
             </div>
           }
         />

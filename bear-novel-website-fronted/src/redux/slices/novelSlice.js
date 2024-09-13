@@ -6,6 +6,7 @@ import {
   getNovelsByNickName,
   getNovelsByTitleKeyWords,
   createNovel,
+  createChapter,
 } from "../../api/novel-api";
 import { setLikeStatus, setLikeCount } from "./likeSlice";
 
@@ -132,6 +133,18 @@ export const addNovel = createAsyncThunk(
   }
 );
 
+export const addChapter = createAsyncThunk(
+  "novels/addChapter",
+  async ({ id, chapter }, { rejectWithValue }) => {
+    try {
+      const response = await createChapter(id, chapter);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 // 用於管理小說列表狀態
 const novelSlice = createSlice({
   name: "novels",
@@ -143,6 +156,7 @@ const novelSlice = createSlice({
     nickNameNovelsStatus: "idle", // 根據暱稱取得小說的狀態
     keyWordsNovelsStatus: "idle", // 關鍵字取得小說的狀態
     addNovelStatus: "idle", // 新增小說的狀態
+    addChapterStatus: "idle", // 新增小說的狀態
   },
   reducers: {
     updateLikeStatus: (state, action) => {
@@ -160,6 +174,7 @@ const novelSlice = createSlice({
       state.nickNameNovelsStatus = "idle";
       state.keyWordsNovelsStatus = "idle";
       state.addNovelStatus = "idle";
+      state.addChapterStatus = "idle";
     },
   },
   extraReducers: (builder) => {
@@ -249,6 +264,25 @@ const novelSlice = createSlice({
       .addCase(addNovel.rejected, (state, action) => {
         state.addNovelStatus = "failed";
         console.error("Failed to add novel:", action.payload);
+      })
+      .addCase(addChapter.pending, (state) => {
+        state.status = "idle";
+        state.userNovelsStatus = "idle";
+        state.myNovelsStatus = "idle";
+        state.nickNameNovelsStatus = "idle";
+        state.keyWordsNovelsStatus = "idle";
+        state.addChapterStatus = "loading";
+      })
+      .addCase(addChapter.fulfilled, (state, action) => {
+        state.addChapterStatus = "succeeded";
+        state.list.push(action.payload); // 將新章節添加到列表中
+      })
+      .addCase(addChapter.rejected, (state, action) => {
+        state.addChapterStatus = "failed";
+        console.error(
+          "Failed to add chapter:",
+          action.payload || action.error.message
+        );
       });
   },
 });

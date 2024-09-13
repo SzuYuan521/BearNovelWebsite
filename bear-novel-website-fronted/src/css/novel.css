@@ -206,67 +206,40 @@
   overflow: hidden;
 }
 
-/*** 這裡開始是Novel Form ***/
-.novel-form {
-  background-color: #efeff1; /* 表單背景顏色 */
-  border-radius: 8px;
-  padding: 20px;
-  max-width: 600px;
-  margin: 20px auto;
-  box-shadow: 0 4px 8px #e5e5e5;
+.chapter-card {
+  height: 140px;
 }
 
-.novel-form h2 {
-  color: #cb8a90; /* 標題顏色 */
-  margin-bottom: 20px;
-}
-
-.novel-form label {
-  display: block;
-  margin-bottom: 5px;
-  color: #ecd4d4; /* 標籤顏色 */
-}
-
-.novel-form input[type="text"],
-.novel-form input[type="number"],
-.novel-form textarea {
+.novel-name-input {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #cb8a90; /* 邊框顏色 */
-  border-radius: 4px;
-  background-color: #fff;
-  margin-bottom: 20px;
+  max-width: 400px;
+  height: 45px;
+  border: 1px solid #ecd4d4;
+  border-radius: 6px;
+  padding: 6px 12px;
 }
 
-.novel-form textarea {
-  min-height: 150px;
-  resize: vertical;
+.novel-name-input:focus {
+  border-color: #cb8a90; /* 選中時邊框顏色變化 */
+  outline: none; /* 去掉默認的藍色輪廓 */
+  box-shadow: 0 0 5px #cb8a9080;
+  background-color: #fefefe; /* 改變背景色 */
 }
 
-.novel-form .ql-container {
-  border: 1px solid #cb8a90; /* Quill 編輯器邊框顏色 */
-  border-radius: 4px;
-  background-color: #fff; /* Quill 編輯器背景顏色 */
-  margin-bottom: 20px;
+/* 章節標題 */
+.chapter-title {
+  height: 50px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 1.2rem;
+  text-align: left;
 }
 
-.novel-form .ql-toolbar {
-  border-bottom: 1px solid #cb8a90; /* Quill 編輯器工具條顏色 */
-}
-
-.novel-form .ql-editor {
-  min-height: 150px;
-}
-
-.novel-form button {
-  background-color: #cb8a90; /* 按鈕背景顏色 */
-  color: #fff; /* 按鈕文字顏色 */
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.novel-form button:hover {
-  background-color: #ecd4d4; /* 按鈕 hover 背景顏色 */
+/* 章節字數 */
+.chapter-word-count {
+  height: 1.4em;
+  font-size: 0.8rem;
+  color: #818181;
+  white-space: nowrap;
 }

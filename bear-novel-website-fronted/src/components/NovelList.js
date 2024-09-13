@@ -14,11 +14,6 @@ const NovelList = () => {
 
   useEffect(() => {
     dispatch(getNovelList());
-    /*
-    if (novelStatus === "idle") {
-      console.log(novelStatus);
-      dispatch(getNovelList());
-    }*/
   }, [dispatch]);
 
   const handleLikeChange = (novelId, newLikedStatus, newLikeCount) => {
