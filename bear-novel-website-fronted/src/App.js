@@ -5,7 +5,7 @@ import Home from "./components/Home";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import SuccessPage from "./components/SuccessPage";
-import Logout from "./components/Logout"; // 引入 Logout 組件
+import Logout from "./components/Logout";
 import Agreement from "./components/Agreement";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import Creator from "./components/Creator";
@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUser, logoutAndResetNovel } from "./redux/slices/userSlice";
 import EditNovel from "./components/EditNovel";
 import EditChapter from "./components/EditChapter";
+import NovelClassification from "./components/NovelClassification";
 
 function App() {
   const dispatch = useDispatch();
@@ -87,6 +88,15 @@ function App() {
           element={
             <div className="container">
               <Logout onLogout={handleLogout} />
+            </div>
+          }
+        />
+
+        <Route
+          path="/novel-classification"
+          element={
+            <div className="container">
+              <NovelClassification />
             </div>
           }
         />

@@ -243,3 +243,87 @@
   color: #818181;
   white-space: nowrap;
 }
+
+/* 小說排序按鈕容器 */
+.novel-sort-button-container {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  margin: 10px;
+}
+
+/* 底部灰色線 */
+.novel-sort-button-container:before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0px;
+  right: 0px;
+  height: 1px;
+  background-color: #e6e8eb;
+  display: block;
+}
+
+.novel-sort-button {
+  padding: 10px 20px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  position: relative; /* 需要為偽元素設置絕對定位提供參考 */
+}
+
+.novel-sort-button.active {
+  color: #cb8a90;
+}
+
+/* 底部粉色底線 */
+.novel-sort-button.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%; /* 底線寬度等於按鈕的寬度 */
+  height: 2px; /* 粉色底線的高度 */
+  background-color: #cb8a90;
+}
+
+.novel-type-title {
+  height: 36px; /* 跟 novel-type-button 同高 */
+  margin-right: 20px;
+}
+
+.novel-type-title p {
+  font-size: 1rem;
+  margin: 0;
+  white-space: nowrap;
+  color: #818181;
+}
+
+.novel-type-button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.novel-type-button {
+  font-size: 1rem;
+  padding: 0 14px;
+  width: auto;
+  height: 32px;
+  display: inline-block;
+  white-space: nowrap;
+  border-radius: 20px;
+  border: none;
+  background-color: transparent;
+}
+
+.novel-type-button:hover {
+  color: #cc767f;
+}
+
+.novel-type-button.active {
+  background: linear-gradient(to right, #f3b6b6, #cc767f);
+  font-weight: bold;
+}

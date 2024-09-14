@@ -32,7 +32,11 @@ const NavbarComponent = ({ isLoggedIn, onLogout, user }) => {
         <Nav.Link as={Link} to="/" className="custom-nav-link">
           首頁
         </Nav.Link>
-        <Nav.Link as={Link} to="/" className="custom-nav-link">
+        <Nav.Link
+          as={Link}
+          to="/novel-classification"
+          className="custom-nav-link"
+        >
           分類
         </Nav.Link>
         <Nav.Link

@@ -3,7 +3,7 @@ import { Button, Row, Col, Card, Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import ReactDOM from "react-dom";
 import NovelPopular from "./NovelPopular";
-import { getMyNovelList } from "../redux/slices/novelSlice";
+import { getMyNovelList, selectDisplayList } from "../redux/slices/novelSlice";
 import { useModal } from "../contexts/ModalContext";
 import { useDispatch, useSelector } from "react-redux";
 import CreateNovel from "./CreateNovel";
@@ -34,7 +34,7 @@ const MyNovels = () => {
   const { isLoggedIn, userLoaded } = useSelector((state) => state.user);
   const { openModal } = useModal();
   const navigate = useNavigate();
-  const novels = useSelector((state) => state.novels.list);
+  const novels = useSelector(selectDisplayList);
   const novelStatus = useSelector((state) => state.novels.myNovelsStatus);
 
   const [isCreateNovelModalOpen, setIsCreateNovelModalOpen] = useState(false);

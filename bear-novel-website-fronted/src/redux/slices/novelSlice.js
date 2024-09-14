@@ -145,11 +145,38 @@ export const addChapter = createAsyncThunk(
   }
 );
 
+const filterAndSortNovels = (list, novelType, sortOrder) => {
+  // 若 novelType 為 "All" 或者未指定, 則不進行篩選
+  let filteredList =
+    novelType === undefined || novelType === null || novelType === -1
+      ? list
+      : list.filter(
+          (novel) => novel.novelTypes && novel.novelTypes.includes(novelType)
+        );
+
+  // 將篩選後的列表進行排序
+  return sortNovelsList(filteredList, sortOrder);
+};
+
+const sortNovelsList = (list, sortOrder) => {
+  return list.slice().sort((a, b) => {
+    switch (sortOrder) {
+      case "latest": // 按照 createdAt 從最新到舊排序
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      case "popular": // 按照 likeCount 從大到小排序
+        return b.likeCount - a.likeCount;
+      default:
+        return 0;
+    }
+  });
+};
+
 // 用於管理小說列表狀態
 const novelSlice = createSlice({
   name: "novels",
   initialState: {
-    list: [], // 儲存小說資料
+    originalList: [], // 保存原始的完整小說列表
+    displayList: [], // 用於顯示的已篩選和排序的小說列表
     status: "idle", // 通用加載狀態: 'idle' | 'loading' | 'succeeded' | 'failed'
     userNovelsStatus: "idle", // 根據 userId 取得小說的狀態
     myNovelsStatus: "idle", // 我的小說的加載狀態
@@ -157,11 +184,15 @@ const novelSlice = createSlice({
     keyWordsNovelsStatus: "idle", // 關鍵字取得小說的狀態
     addNovelStatus: "idle", // 新增小說的狀態
     addChapterStatus: "idle", // 新增小說的狀態
+    sortOrder: "latest", // 預設排序順序 最新
+    novelType: -1, // 預設分類為 -1(All), 首頁也是 -1(All)
   },
   reducers: {
     updateLikeStatus: (state, action) => {
       const { novelId, isLiked, likeCount } = action.payload;
-      const novel = state.list.find((novel) => novel.novelId === novelId);
+      const novel = state.originalList.find(
+        (novel) => novel.novelId === novelId
+      );
       if (novel) {
         novel.isLiked = isLiked;
         novel.likeCount = likeCount;
@@ -176,6 +207,16 @@ const novelSlice = createSlice({
       state.addNovelStatus = "idle";
       state.addChapterStatus = "idle";
     },
+    sortNovels: (state, action) => {
+      const { sortOrder, novelType } = action.payload;
+      state.sortOrder = sortOrder !== undefined ? sortOrder : state.sortOrder; // 更新排序
+      state.novelType = novelType !== undefined ? novelType : state.novelType; // 更新類型
+      state.displayList = filterAndSortNovels(
+        state.originalList,
+        state.novelType,
+        state.sortOrder
+      );
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -188,7 +229,12 @@ const novelSlice = createSlice({
       })
       .addCase(getNovelList.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.list = action.payload;
+        state.originalList = action.payload; // 保存原始列表
+        state.displayList = filterAndSortNovels(
+          action.payload,
+          state.novelType,
+          state.sortOrder
+        );
       })
       .addCase(getNovelList.rejected, (state) => {
         state.status = "failed";
@@ -202,7 +248,8 @@ const novelSlice = createSlice({
       })
       .addCase(getNovelListByUser.fulfilled, (state, action) => {
         state.userNovelsStatus = "succeeded";
-        state.list = action.payload;
+        state.originalList = action.payload;
+        state.displayList = state.originalList;
       })
       .addCase(getNovelListByUser.rejected, (state) => {
         state.userNovelsStatus = "failed";
@@ -216,7 +263,8 @@ const novelSlice = createSlice({
       })
       .addCase(getMyNovelList.fulfilled, (state, action) => {
         state.myNovelsStatus = "succeeded";
-        state.list = action.payload;
+        state.originalList = action.payload;
+        state.displayList = state.originalList;
       })
       .addCase(getMyNovelList.rejected, (state) => {
         state.myNovelsStatus = "failed";
@@ -230,7 +278,8 @@ const novelSlice = createSlice({
       })
       .addCase(getNovelListByNickName.fulfilled, (state, action) => {
         state.nickNameNovelsStatus = "succeeded";
-        state.list = action.payload;
+        state.originalList = action.payload;
+        state.displayList = state.originalList;
       })
       .addCase(getNovelListByNickName.rejected, (state) => {
         state.nickNameNovelsStatus = "failed";
@@ -244,7 +293,8 @@ const novelSlice = createSlice({
       })
       .addCase(getNovelListByKeyWords.fulfilled, (state, action) => {
         state.keyWordsNovelsStatus = "succeeded";
-        state.list = action.payload;
+        state.originalList = action.payload;
+        state.displayList = state.originalList;
       })
       .addCase(getNovelListByKeyWords.rejected, (state) => {
         state.keyWordsNovelsStatus = "failed";
@@ -259,7 +309,8 @@ const novelSlice = createSlice({
       })
       .addCase(addNovel.fulfilled, (state, action) => {
         state.addNovelStatus = "succeeded";
-        state.list.push(action.payload); // 將新小說添加到列表中
+        state.originalList.push(action.payload); // 將新小說添加到列表中
+        state.displayList = state.originalList;
       })
       .addCase(addNovel.rejected, (state, action) => {
         state.addNovelStatus = "failed";
@@ -275,7 +326,8 @@ const novelSlice = createSlice({
       })
       .addCase(addChapter.fulfilled, (state, action) => {
         state.addChapterStatus = "succeeded";
-        state.list.push(action.payload); // 將新章節添加到列表中
+        state.originalList.push(action.payload); // 將新章節添加到列表中
+        state.displayList = state.originalList;
       })
       .addCase(addChapter.rejected, (state, action) => {
         state.addChapterStatus = "failed";
@@ -287,5 +339,10 @@ const novelSlice = createSlice({
   },
 });
 
-export const { updateLikeStatus, resetNovelState } = novelSlice.actions;
+export const { updateLikeStatus, resetNovelState, sortNovels } =
+  novelSlice.actions;
+
+export const selectDisplayList = (state) => state.novels.displayList;
+export const selectOriginalList = (state) => state.novels.originalList;
+
 export default novelSlice.reducer;

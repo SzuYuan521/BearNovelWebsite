@@ -4,12 +4,15 @@ import "../css/novel.css";
 import LikeToggle from "./LikeToggle";
 import NovelPopular from "./NovelPopular";
 import { useDispatch, useSelector } from "react-redux";
-import { getNovelList, updateLikeStatus } from "../redux/slices/novelSlice";
+import {
+  getNovelList,
+  updateLikeStatus,
+  selectDisplayList,
+} from "../redux/slices/novelSlice";
 
 const NovelList = () => {
   const dispatch = useDispatch();
-  const novels = useSelector((state) => state.novels.list);
-
+  const novels = useSelector(selectDisplayList);
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
   useEffect(() => {
