@@ -15,6 +15,7 @@ import { getUser, logoutAndResetNovel } from "./redux/slices/userSlice";
 import EditNovel from "./components/EditNovel";
 import EditChapter from "./components/EditChapter";
 import NovelClassification from "./components/NovelClassification";
+import NovelPage from "./components/NovelPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -145,6 +146,14 @@ function App() {
           element={
             <div className="container">
               <PrivacyPolicy />
+            </div>
+          }
+        />
+        <Route
+          path="/novel-page/:novelId"
+          element={
+            <div className="container">
+              <NovelPage />
             </div>
           }
         />

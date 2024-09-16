@@ -7,7 +7,6 @@ import { checkAuthor, getAllChapters } from "../api/novel-api";
 import "../css/modal.css";
 import CreateChapter from "./CreateChapter";
 import { useModal } from "../contexts/ModalContext";
-import { convertFromRaw } from "draft-js";
 
 const DropdownMenu = ({ id, handleSettings, handleDelete }) => (
   <Dropdown.Menu align="end">
@@ -92,18 +91,6 @@ const EditNovel = () => {
     return <div>Loading...</div>;
   }
 
-  const getPlainTextLength = (content) => {
-    if (!content) return 0;
-    try {
-      const rawContent = JSON.parse(content);
-      const contentState = convertFromRaw(rawContent);
-      return contentState.getPlainText().length;
-    } catch (error) {
-      console.error("解析 JSON 內容失敗", error);
-      return content.length;
-    }
-  };
-
   const handleSettings = (chapterId) => {
     console.log(`章節設定: ${chapterId}`);
   };
@@ -172,7 +159,7 @@ const EditNovel = () => {
                             第{chapter.chapterNumber}章 {chapter.title}
                           </Card.Title>
                           <Card.Text className="chapter-word-count">
-                            {getPlainTextLength(chapter.content)} 字
+                            {chapter.wordCount} 字
                           </Card.Text>
                         </div>
                       </Card.Body>

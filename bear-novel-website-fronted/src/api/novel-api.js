@@ -17,6 +17,38 @@ export const getNovels = async () => {
   }
 };
 
+// 根據 NovelId 取得小說(包含小說/作者/章節資料)
+export const getNovelById = async (novelId) => {
+  try {
+    const response = await axios.get(`${API_URL}/${novelId}`, {
+      timeout: 30000, // 設置 10 秒超時
+      maxContentLength: Infinity, // 允許任意大小的響應
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching novel:", error);
+    if (error.response) {
+      // 服務器回應了請求，但狀態碼不在 2xx 範圍內
+      console.error("Response data:", error.response.data);
+      console.error("Response status:", error.response.status);
+      console.error("Response headers:", error.response.headers);
+    } else if (error.request) {
+      // 請求已發送，但沒有收到回應
+      console.error("No response received:", error.request);
+    } else {
+      // 設置請求時出現問題
+      console.error("Error message:", error.message);
+    }
+    console.error("Error config:", error.config);
+    throw error;
+  }
+};
+
 // 根據 UserId 取得該用戶的所有小說
 export const getNovelsByUserId = async (userId) => {
   try {
@@ -161,11 +193,20 @@ export const createChapter = async (id, chapter) => {
         headers: {
           "Content-Type": "application/json",
         },
+        timeout: 10000, // 設置超時時間為 10 秒
       }
     );
     return response.data;
   } catch (error) {
-    console.log("新增章節失敗:", error.response?.data || error.message);
+    console.log("新增章節失敗:", error);
+    if (error.response) {
+      console.log("錯誤響應:", error.response.data);
+      console.log("錯誤狀態:", error.response.status);
+    } else if (error.request) {
+      console.log("請求錯誤:", error.request);
+    } else {
+      console.log("錯誤:", error.message);
+    }
     throw error;
   }
 };

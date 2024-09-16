@@ -13,7 +13,9 @@ const authRequiredPaths = [
   "/novels/", // 創建、更新、刪除小說
   "/novels/my-novels",
   "/novels//like", // 點讚或取消點讚
-  "novels//check-author", // 檢查是不是該小說作者
+  "/novels//check-author", // 檢查是不是該小說作者
+  "/novels/chapter/",
+  "/novels//chapters",
 ];
 
 /// 可選認證的 API 列表(即使登出也會繼續呼叫 API)

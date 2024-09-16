@@ -36,11 +36,11 @@ const NovelList = () => {
           <div key={novel.novelId} className="col-12 col-md-6 col-lg-4">
             <div className="novel-grid rounded p-3 text-center">
               <div className="novel-info">
-                <Link to={`/novels/${novel.novelId}`}>
+                <Link to={`/novel-page/${novel.novelId}`}>
                   <div className="novel-left">
                     <img
                       alt="小說封面"
-                      src="/img/這道長能處算命就送女朋友.jfif"
+                      src="/img/novel-cover-empty-tip.png"
                       className="novel-image"
                     ></img>
                   </div>
