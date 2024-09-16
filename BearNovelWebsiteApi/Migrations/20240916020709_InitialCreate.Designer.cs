@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BearNovelWebsiteApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240831190141_AddNovelIsEnding")]
-    partial class AddNovelIsEnding
+    [Migration("20240916020709_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -48,6 +48,9 @@ namespace BearNovelWebsiteApi.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("ChapterId");
 
@@ -149,9 +152,16 @@ namespace BearNovelWebsiteApi.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
+                    b.Property<string>("NovelTypes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalWordCount")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -245,6 +255,12 @@ namespace BearNovelWebsiteApi.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<byte[]>("ProfilePicture")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ProfilePictureContentType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Role")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -258,7 +274,9 @@ namespace BearNovelWebsiteApi.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
@@ -385,7 +403,7 @@ namespace BearNovelWebsiteApi.Migrations
             modelBuilder.Entity("BearNovelWebsiteApi.Models.Chapter", b =>
                 {
                     b.HasOne("BearNovelWebsiteApi.Models.Novel", "Novel")
-                        .WithMany()
+                        .WithMany("Chapters")
                         .HasForeignKey("NovelId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -463,6 +481,8 @@ namespace BearNovelWebsiteApi.Migrations
 
             modelBuilder.Entity("BearNovelWebsiteApi.Models.Novel", b =>
                 {
+                    b.Navigation("Chapters");
+
                     b.Navigation("NovelViews");
                 });
 #pragma warning restore 612, 618

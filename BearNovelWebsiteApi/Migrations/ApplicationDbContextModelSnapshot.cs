@@ -158,6 +158,9 @@ namespace BearNovelWebsiteApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TotalWordCount")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -398,7 +401,7 @@ namespace BearNovelWebsiteApi.Migrations
             modelBuilder.Entity("BearNovelWebsiteApi.Models.Chapter", b =>
                 {
                     b.HasOne("BearNovelWebsiteApi.Models.Novel", "Novel")
-                        .WithMany()
+                        .WithMany("Chapters")
                         .HasForeignKey("NovelId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -476,6 +479,8 @@ namespace BearNovelWebsiteApi.Migrations
 
             modelBuilder.Entity("BearNovelWebsiteApi.Models.Novel", b =>
                 {
+                    b.Navigation("Chapters");
+
                     b.Navigation("NovelViews");
                 });
 #pragma warning restore 612, 618

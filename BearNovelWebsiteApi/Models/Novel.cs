@@ -27,7 +27,10 @@ namespace BearNovelWebsiteApi.Models
 
         public List<NovelType> NovelTypes { get; set; } = new List<NovelType>();
 
+        public int TotalWordCount { get; set; }
+
         public User User { get; set; }
+        public ICollection<Chapter> Chapters { get; set; } = new List<Chapter>();
         public ICollection<NovelView> NovelViews { get; set; }
     }
 }

@@ -4,22 +4,22 @@
 
 namespace BearNovelWebsiteApi.Migrations
 {
-    public partial class AddNovelTypes : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "NovelTypes",
+            migrationBuilder.AddColumn<int>(
+                name: "TotalWordCount",
                 table: "Novels",
-                type: "nvarchar(max)",
+                type: "int",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: 0);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "NovelTypes",
+                name: "TotalWordCount",
                 table: "Novels");
         }
     }

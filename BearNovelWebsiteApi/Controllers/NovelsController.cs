@@ -58,6 +58,52 @@ namespace BearNovelWebsiteApi.Controllers
         }
 
         /// <summary>
+        /// 根據 NovelId 取得資料
+        /// </summary>
+        /// <param name="novelId"></param>
+        /// <returns></returns>
+        [HttpGet("{novelId}")]
+        public async Task<IActionResult> GetNovel([FromRoute] int novelId)
+        {
+            try
+            {
+                var novel = await _context.Novels
+                    .Include(n => n.User) // 包括作者資訊
+                    .FirstOrDefaultAsync(n => n.NovelId == novelId);
+
+                if (novel == null)
+                {
+                    return NotFound();
+                }
+
+                // 只取得章節的 ChapterId, ChapterNumber, Title
+                var chapters = await _context.Chapters
+                    .Where(c => c.NovelId == novelId)
+                    .Select(c => new
+                    {
+                        c.ChapterId,
+                        c.ChapterNumber,
+                        c.Title,
+                        c.UpdatedAt
+                    })
+                    .ToListAsync();
+
+                var result = new
+                {
+                    Novel = novel,
+                    Chapters = chapters
+                };
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, "伺服器錯誤，請稍後再試。");
+            }
+        }
+
+        /// <summary>
         /// 根據UserId獲取該User的所有小說 (對特定作者感興趣時)
         /// </summary>
         /// <param name="userId">userId</param>
@@ -571,6 +617,11 @@ namespace BearNovelWebsiteApi.Controllers
 
             // 更新章節的修改時間
             existingChapter.UpdatedAt = DateTime.Now;
+
+            // 更新小說的總字數
+    existingChapter.Novel.TotalWordCount = await _context.Chapters
+        .Where(c => c.NovelId == existingChapter.NovelId)
+        .SumAsync(c => c.Content.Length);
 
             // 將章節標記為修改狀態
             _context.Update(existingChapter);
