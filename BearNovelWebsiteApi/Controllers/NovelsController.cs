@@ -549,6 +549,7 @@ namespace BearNovelWebsiteApi.Controllers
                 ChapterNumber = existingChapters.Count + 1,
                 Title = chapterTitle,
                 Content = string.Empty,
+                WordCount = 0,
             };
 
             // 新增章節
@@ -615,16 +616,23 @@ namespace BearNovelWebsiteApi.Controllers
             existingChapter.Title = updatedData.ChapterTitle;
             existingChapter.Content = updatedData.ChapterContent;
 
+            existingChapter.WordCount = GetPlainTextLength(updatedData.ChapterContent);
+
             // 更新章節的修改時間
             existingChapter.UpdatedAt = DateTime.Now;
 
+            var novel = existingChapter.Novel;
+
             // 更新小說的總字數
-    existingChapter.Novel.TotalWordCount = await _context.Chapters
-        .Where(c => c.NovelId == existingChapter.NovelId)
-        .SumAsync(c => c.Content.Length);
+            var totalWordCount = await _context.Chapters
+                .Where(c => c.NovelId == novel.NovelId && c.ChapterId != chapterId)
+                .SumAsync(c => c.WordCount);
+
+            novel.TotalWordCount = totalWordCount + existingChapter.WordCount;
 
             // 將章節標記為修改狀態
             _context.Update(existingChapter);
+            _context.Novels.Update(novel);
             await _context.SaveChangesAsync();
 
             // 返回204 NoContent
@@ -654,7 +662,11 @@ namespace BearNovelWebsiteApi.Controllers
                     return Forbid("沒有權限編輯章節");
                 }
 
+                var novel = existingChapter.Novel;
+                novel.TotalWordCount -= existingChapter.WordCount;
+
                 _context.Remove(existingChapter);
+                _context.Novels.Update(novel);
                 await _context.SaveChangesAsync();
 
                 return NoContent();
@@ -671,7 +683,23 @@ namespace BearNovelWebsiteApi.Controllers
             var chapters = await _context.Chapters.Where(c=>c.NovelId == novelId).ToListAsync(); ;
             return Ok(chapters);
         }
+
+        public int GetPlainTextLength(string jsonContent)
+        {
+            if (string.IsNullOrEmpty(jsonContent)) return 0;
+            try
+            {
+                var content = JsonConvert.DeserializeObject<Content>(jsonContent);
+                return content?.Blocks.Sum(b => b.Text.Length) ?? 0;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"解析 JSON 內容失敗: {ex.Message}");
+                return 0;
+            }
+        }
     }
+
 
     public class CreateNovelData
     {
@@ -691,5 +719,23 @@ namespace BearNovelWebsiteApi.Controllers
     {
         public string ChapterTitle { get; set; }
         public string ChapterContent { get; set; }
+    }
+
+    public class Content
+    {
+        [JsonProperty("blocks")]
+        public Block[] Blocks { get; set; }
+
+        [JsonProperty("entityMap")]
+        public object EntityMap { get; set; }
+    }
+
+    public class Block
+    {
+        [JsonProperty("text")]
+        public string Text { get; set; }
+
+        [JsonProperty("type")]
+        public string Type { get; set; }
     }
 }

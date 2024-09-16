@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using static BearNovelWebsiteApi.Constants;
+using Newtonsoft.Json;
 
 namespace BearNovelWebsiteApi.Models
 {
@@ -30,7 +31,11 @@ namespace BearNovelWebsiteApi.Models
         public int TotalWordCount { get; set; }
 
         public User User { get; set; }
+
+        [JsonIgnore]
         public ICollection<Chapter> Chapters { get; set; } = new List<Chapter>();
+
+        [JsonIgnore]
         public ICollection<NovelView> NovelViews { get; set; }
     }
 }

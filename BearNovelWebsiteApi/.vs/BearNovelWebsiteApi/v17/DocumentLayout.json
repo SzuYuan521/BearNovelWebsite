@@ -3,28 +3,36 @@
   "WorkspaceRootPath": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\models\\novel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|solutionrelative:models\\novel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\controllers\\novelscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|solutionrelative:controllers\\novelscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|solutionrelative:models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\models\\chapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|solutionrelative:models\\chapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\models\\novel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|solutionrelative:models\\novel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|solutionrelative:models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\services\\jwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|solutionrelative:services\\jwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\models\\chapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|solutionrelative:models\\chapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\services\\novelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|solutionrelative:services\\novelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|solutionrelative:controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\constants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -35,16 +43,8 @@
       "RelativeMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|solutionrelative:services\\novelcleanupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|solutionrelative:controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\services\\jwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|solutionrelative:services\\jwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D1C7868F-921B-40D0-8B4D-FC77F4277108}|BearNovelWebsiteApi.csproj|d:\\web\\bearnovelwebsite\\bearnovelwebsite\\bearnovelwebsiteapi\\models\\novelview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -82,11 +82,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 16,
+          "SelectedChildIndex": 17,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "User.cs",
               "DocumentMoniker": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Models\\User.cs",
               "RelativeDocumentMoniker": "Models\\User.cs",
@@ -94,23 +94,25 @@
               "RelativeToolTip": "Models\\User.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAOAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-03T11:36:10.264Z"
+              "WhenOpened": "2024-09-03T11:36:10.264Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "Chapter.cs",
               "DocumentMoniker": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Models\\Chapter.cs",
               "RelativeDocumentMoniker": "Models\\Chapter.cs",
               "ToolTip": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Models\\Chapter.cs",
               "RelativeToolTip": "Models\\Chapter.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAwwAsAAAAhAAAA",
+              "ViewState": "AQIAAAQAAAAAAAAAAAAwwBYAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-11T14:17:37.686Z"
+              "WhenOpened": "2024-09-11T14:17:37.686Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -118,11 +120,12 @@
               "RelativeToolTip": "appsettings.json",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAiAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-09-10T18:27:04.424Z"
+              "WhenOpened": "2024-09-10T18:27:04.424Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "NovelCleanupService.cs",
               "DocumentMoniker": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Services\\NovelCleanupService.cs",
               "RelativeDocumentMoniker": "Services\\NovelCleanupService.cs",
@@ -130,7 +133,8 @@
               "RelativeToolTip": "Services\\NovelCleanupService.cs",
               "ViewState": "AQIAAAIAAAAAAAAAAAAswBEAAAA8AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-10T13:16:54.347Z"
+              "WhenOpened": "2024-09-10T13:16:54.347Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -142,7 +146,8 @@
               "RelativeToolTip": "Services\\RankingBackgroundService.cs",
               "ViewState": "AQIAABAAAAAAAAAAAAAAwAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-10T13:16:49.42Z"
+              "WhenOpened": "2024-09-10T13:16:49.42Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -154,55 +159,60 @@
               "RelativeToolTip": "Data\\ApplicationDbContext.cs",
               "ViewState": "AQIAAB4AAAAAAAAAAAAkwEIAAAAeAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-04T14:23:42.613Z"
+              "WhenOpened": "2024-09-04T14:23:42.613Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AQIAAKQAAAAAAAAAAAAgwK4AAAAdAAAA",
+              "ViewState": "AQIAAIcAAAAAAAAAAAAAAI0AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-04T14:14:42.75Z"
+              "WhenOpened": "2024-09-04T14:14:42.75Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 4,
               "Title": "JwtService.cs",
               "DocumentMoniker": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Services\\JwtService.cs",
               "RelativeDocumentMoniker": "Services\\JwtService.cs",
               "ToolTip": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Services\\JwtService.cs",
               "RelativeToolTip": "Services\\JwtService.cs",
-              "ViewState": "AQIAACoAAAAAAAAAAAAQwDgAAAAqAAAA",
+              "ViewState": "AQIAAFYAAAAAAAAAAAAQwGcAAAAbAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-03T04:38:40.227Z"
+              "WhenOpened": "2024-09-03T04:38:40.227Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "NovelService.cs",
               "DocumentMoniker": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Services\\NovelService.cs",
               "RelativeDocumentMoniker": "Services\\NovelService.cs",
               "ToolTip": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Services\\NovelService.cs",
               "RelativeToolTip": "Services\\NovelService.cs",
-              "ViewState": "AQIAABYAAAAAAAAAAAAAwBoAAAAJAAAA",
+              "ViewState": "AQIAABYAAAAAAAAAAAAAwCMAAAAhAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-03T04:33:14.575Z"
+              "WhenOpened": "2024-09-03T04:33:14.575Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 7,
               "Title": "UsersController.cs",
               "DocumentMoniker": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Controllers\\UsersController.cs",
               "RelativeDocumentMoniker": "Controllers\\UsersController.cs",
               "ToolTip": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Controllers\\UsersController.cs",
               "RelativeToolTip": "Controllers\\UsersController.cs",
-              "ViewState": "AQIAAKgAAAAAAAAAAAAYwL4AAABpAAAA",
+              "ViewState": "AQIAADoAAAAAAAAAAAAYwEIAAAAWAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-03T04:30:15.329Z"
+              "WhenOpened": "2024-09-03T04:30:15.329Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -214,7 +224,8 @@
               "RelativeToolTip": "Models\\RegisterModel.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-03T03:27:45.215Z"
+              "WhenOpened": "2024-09-03T03:27:45.215Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -226,7 +237,8 @@
               "RelativeToolTip": "Models\\NovelView.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-03T03:27:41.592Z"
+              "WhenOpened": "2024-09-03T03:27:41.592Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -238,7 +250,8 @@
               "RelativeToolTip": "Models\\LoginModel.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-03T03:27:38.735Z"
+              "WhenOpened": "2024-09-03T03:27:38.735Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -250,7 +263,8 @@
               "RelativeToolTip": "Models\\Like.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-03T03:27:37.481Z"
+              "WhenOpened": "2024-09-03T03:27:37.481Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -262,11 +276,12 @@
               "RelativeToolTip": "Models\\Comment.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAlAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-03T03:27:36.492Z"
+              "WhenOpened": "2024-09-03T03:27:36.492Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "Constants.cs",
               "DocumentMoniker": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Constants.cs",
               "RelativeDocumentMoniker": "Constants.cs",
@@ -274,30 +289,31 @@
               "RelativeToolTip": "Constants.cs",
               "ViewState": "AQIAAAgAAAAAAAAAAAAnwB4AAAAfAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-03T03:15:28.146Z"
+              "WhenOpened": "2024-09-03T03:15:28.146Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Novel.cs",
               "DocumentMoniker": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Models\\Novel.cs",
               "RelativeDocumentMoniker": "Models\\Novel.cs",
               "ToolTip": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Models\\Novel.cs",
               "RelativeToolTip": "Models\\Novel.cs",
-              "ViewState": "AQIAABMAAAAAAAAAAAAmwBgAAAATAAAA",
+              "ViewState": "AQIAABgAAAAAAAAAAAAIwCAAAAAmAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-08-30T14:51:11.96Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "NovelsController.cs",
               "DocumentMoniker": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Controllers\\NovelsController.cs",
               "RelativeDocumentMoniker": "Controllers\\NovelsController.cs",
               "ToolTip": "D:\\Web\\BearNovelWebsite\\BearNovelWebsite\\BearNovelWebsiteApi\\Controllers\\NovelsController.cs",
               "RelativeToolTip": "Controllers\\NovelsController.cs",
-              "ViewState": "AQIAAF0CAAAAAAAAAAAIwG8CAAApAAAA",
+              "ViewState": "AQIAAFgAAAAAAAAAAAAqwGUAAAAqAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-08-30T05:01:28.812Z",
               "EditorCaption": ""

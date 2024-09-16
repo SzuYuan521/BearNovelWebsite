@@ -11,6 +11,7 @@ using System.Text;
 using StackExchange.Redis;
 using BearNovelWebsiteApi.Services;
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -140,7 +141,12 @@ builder.Services.AddCors(options =>
 });
 
 
-
+// 配置 JSON 序列化選項以忽略循環引用
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+    });
 
 builder.Services.AddAuthorization();
 

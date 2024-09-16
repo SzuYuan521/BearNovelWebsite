@@ -1,4 +1,6 @@
-﻿namespace BearNovelWebsiteApi.Models
+﻿using Newtonsoft.Json;
+
+namespace BearNovelWebsiteApi.Models
 {
     public class Chapter
     {
@@ -11,7 +13,10 @@
 
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
+        public int WordCount { get; set; }
+
         // 導航屬性
+        [JsonIgnore]
         public Novel Novel { get; set; }
     }
 }
