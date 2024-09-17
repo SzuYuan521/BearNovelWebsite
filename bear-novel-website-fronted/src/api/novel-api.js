@@ -227,13 +227,9 @@ export const updateChapter = async (id, chapter) => {
 // 刪除章節
 export const deleteChapter = async (id) => {
   try {
-    await axios.delete(
-      `${API_URL}/chapter/${id}`,
-      {},
-      {
-        withCredentials: true,
-      }
-    );
+    await axiosInstance.delete(`${NOVEL_URL}/chapter/${id}`, {
+      withCredentials: true,
+    });
   } catch (error) {
     console.log("刪除章節失敗");
     throw error;

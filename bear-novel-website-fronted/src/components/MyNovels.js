@@ -12,12 +12,15 @@ import { useModal } from "../contexts/ModalContext";
 import { useDispatch, useSelector } from "react-redux";
 import CreateNovel from "./CreateNovel";
 
-const DropdownMenu = ({ id, handleSettings, handleDelete }) => (
+const DropdownMenu = ({ id, handleSettings, handleDelete, onClose }) => (
   <Dropdown.Menu align="end">
     <Dropdown.Item
       onClick={(e) => {
         e.stopPropagation(); // 阻止事件冒泡
         handleSettings(id);
+        if (onClose) {
+          onClose();
+        }
       }}
     >
       作品設定
@@ -26,6 +29,10 @@ const DropdownMenu = ({ id, handleSettings, handleDelete }) => (
       onClick={(e) => {
         e.stopPropagation(); // 阻止事件冒泡
         handleDelete(id);
+        if (onClose) {
+          console.log(id);
+          onClose();
+        }
       }}
     >
       刪除作品
@@ -45,6 +52,8 @@ const MyNovels = () => {
   const openCreateNovelModal = () => setIsCreateNovelModalOpen(true);
   const closeCreateNovelModal = () => setIsCreateNovelModalOpen(false);
 
+  const [openDropdownId, setOpenDropdownId] = useState(null);
+
   useEffect(() => {
     if (userLoaded && !isLoggedIn) {
       openModal("請先登入", "登入會員後，享受更多會員福利!", () => {
@@ -60,10 +69,12 @@ const MyNovels = () => {
   }, [userLoaded, isLoggedIn, dispatch, novelStatus]);
 
   const handleSettings = (novelId) => {
+    setOpenDropdownId(null);
     console.log(`作品設定: ${novelId}`);
   };
 
   const handleDelete = (novelId) => {
+    setOpenDropdownId(null);
     openModal(
       "確認刪除",
       "您確定刪除作品? 刪除後無法恢復",
@@ -72,6 +83,10 @@ const MyNovels = () => {
       },
       true
     );
+  };
+
+  const handleToggleDropdown = (novelId) => {
+    setOpenDropdownId(openDropdownId === novelId ? null : novelId);
   };
 
   return (
@@ -105,7 +120,10 @@ const MyNovels = () => {
                     {/* 下拉選單 */}
                     <Dropdown
                       className="position-absolute top-50 end-0 me-4 translate-middle-y"
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleDropdown(novel.novelId);
+                      }}
                     >
                       <Dropdown.Toggle
                         variant="light"
@@ -115,14 +133,16 @@ const MyNovels = () => {
                         <i className="bi bi-three-dots-vertical"></i>
                       </Dropdown.Toggle>
 
-                      {ReactDOM.createPortal(
-                        <DropdownMenu
-                          id={novel.novelId}
-                          handleSettings={handleSettings}
-                          handleDelete={() => handleDelete(novel.novelId)}
-                        />,
-                        document.body
-                      )}
+                      {openDropdownId === novel.novelId &&
+                        ReactDOM.createPortal(
+                          <DropdownMenu
+                            id={novel.novelId}
+                            handleSettings={handleSettings}
+                            handleDelete={() => handleDelete(novel.novelId)}
+                            onClose={() => setOpenDropdownId(null)}
+                          />,
+                          document.body
+                        )}
                     </Dropdown>
 
                     <Link

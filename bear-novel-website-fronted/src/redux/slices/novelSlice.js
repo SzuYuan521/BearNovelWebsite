@@ -9,6 +9,7 @@ import {
   createNovel,
   createChapter,
   deleteNovel,
+  deleteChapter,
 } from "../../api/novel-api";
 import { setLikeStatus, setLikeCount } from "./likeSlice";
 
@@ -178,6 +179,19 @@ export const addChapter = createAsyncThunk(
   }
 );
 
+export const delChapter = createAsyncThunk(
+  "novels/delChapter",
+  async ({ chapterId }, { rejectWithValue }) => {
+    console.log(chapterId);
+    try {
+      await deleteChapter(chapterId);
+      return chapterId;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const filterAndSortNovels = (list, novelType, sortOrder) => {
   // 若 novelType 為 "All" 或者未指定, 則不進行篩選
   let filteredList =
@@ -240,7 +254,9 @@ const novelSlice = createSlice({
     nickNameNovelsStatus: "idle", // 根據暱稱取得小說的狀態
     keyWordsNovelsStatus: "idle", // 關鍵字取得小說的狀態
     addNovelStatus: "idle", // 新增小說的狀態
+    delNovelStatus: "idle", // 刪除小說的狀態
     addChapterStatus: "idle", // 新增小說的狀態
+    delChapterStatus: "idle", // 刪除章節的狀態
     currentNovelStatus: "idle", // 當前小說的加載狀態
     sortOrder: "latest", // 預設排序順序 最新
     novelType: -1, // 預設分類為 -1(All), 首頁也是 -1(All)
@@ -265,6 +281,7 @@ const novelSlice = createSlice({
       state.addNovelStatus = "idle";
       state.delNovelStatus = "idle";
       state.addChapterStatus = "idle";
+      state.delChapterStatus = "idle";
     },
     sortNovels: (state, action) => {
       const { sortOrder, novelType } = action.payload;
@@ -388,7 +405,7 @@ const novelSlice = createSlice({
         state.displayList = state.originalList;
       })
       .addCase(addNovel.rejected, (state, action) => {
-        state.delNovelStatus = "failed";
+        state.addNovelStatus = "failed";
         console.error("Failed to add novel:", action.payload);
       })
       .addCase(delNovel.pending, (state) => {
@@ -424,6 +441,28 @@ const novelSlice = createSlice({
       })
       .addCase(addChapter.rejected, (state, action) => {
         state.addChapterStatus = "failed";
+        console.error(
+          "Failed to add chapter:",
+          action.payload || action.error.message
+        );
+      })
+      .addCase(delChapter.pending, (state) => {
+        state.status = "idle";
+        state.userNovelsStatus = "idle";
+        state.myNovelsStatus = "idle";
+        state.nickNameNovelsStatus = "idle";
+        state.keyWordsNovelsStatus = "idle";
+        state.delChapterStatus = "loading";
+      })
+      .addCase(delChapter.fulfilled, (state, action) => {
+        state.delChapterStatus = "succeeded";
+        state.originalList = state.originalList.filter(
+          (chapter) => chapter.chapterId !== action.payload
+        );
+        state.displayList = state.originalList;
+      })
+      .addCase(delChapter.rejected, (state, action) => {
+        state.delChapterStatus = "failed";
         console.error(
           "Failed to add chapter:",
           action.payload || action.error.message
