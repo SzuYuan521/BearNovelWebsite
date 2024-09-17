@@ -82,7 +82,14 @@ const NovelPage = () => {
                 &nbsp;&nbsp;{lastUpdateDate}
               </p>
             )}
-            <Button className="novel-page-info-button">開始閱讀</Button>
+            <Button
+              as={Link}
+              to={`/read-novel-chapters?novelId=${novel.novelId}&chapterId=${chapters[0]?.chapterId}`}
+              state={{ novelTitle: novel.title }}
+              className="novel-page-info-button"
+            >
+              開始閱讀
+            </Button>
           </div>
           <div className="novel-page-straight-divider"></div>
           <div className="novel-page-author-info">
@@ -107,8 +114,9 @@ const NovelPage = () => {
               key={chapter.chapterId}
             >
               <Link
-                to="/novel-page/:novelId/chapter/:chapterId"
+                to={`/read-novel-chapters?novelId=${novelId}&chapterId=${chapter.chapterId}`}
                 className="novel-page-chapters-link p-2"
+                state={{ novelTitle: novel.title }}
               >
                 第{chapter.chapterNumber}章 {chapter.title}
               </Link>

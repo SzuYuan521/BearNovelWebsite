@@ -583,7 +583,7 @@ namespace BearNovelWebsiteApi.Controllers
         }
 
         /// <summary>
-        /// 取小說分頁
+        /// 取章節分頁
         /// </summary>
         /// <param name="novelId"></param>
         /// <param name="page">第n頁</param>

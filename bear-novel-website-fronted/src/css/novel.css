@@ -447,6 +447,11 @@
   color: #818181;
 }
 
+.return-novel-page {
+  font-size: 1.2rem;
+  font-style: normal;
+}
+
 @media (max-width: 768px) {
   .novel-page-info {
     flex-direction: column;

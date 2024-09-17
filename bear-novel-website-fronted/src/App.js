@@ -16,6 +16,7 @@ import EditNovel from "./components/EditNovel";
 import EditChapter from "./components/EditChapter";
 import NovelClassification from "./components/NovelClassification";
 import NovelPage from "./components/NovelPage";
+import ReadNovelChapters from "./components/ReadNovelChapters";
 
 function App() {
   const dispatch = useDispatch();
@@ -154,6 +155,14 @@ function App() {
           element={
             <div className="container">
               <NovelPage />
+            </div>
+          }
+        />
+        <Route
+          path="/read-novel-chapters"
+          element={
+            <div className="container">
+              <ReadNovelChapters />
             </div>
           }
         />

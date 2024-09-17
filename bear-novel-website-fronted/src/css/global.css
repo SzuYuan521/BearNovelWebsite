@@ -15,6 +15,13 @@ h3 {
   font-weight: bold;
 }
 
+h4 {
+  color: #cb8a90;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
 /* 搜尋框 */
 .search-bar {
   position: relative;
