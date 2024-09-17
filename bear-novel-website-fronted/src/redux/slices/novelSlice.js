@@ -8,6 +8,7 @@ import {
   getNovelsByTitleKeyWords,
   createNovel,
   createChapter,
+  deleteNovel,
 } from "../../api/novel-api";
 import { setLikeStatus, setLikeCount } from "./likeSlice";
 
@@ -149,6 +150,18 @@ export const addNovel = createAsyncThunk(
   }
 );
 
+export const delNovel = createAsyncThunk(
+  "novels/delNovel",
+  async (novelId, { rejectWithValue }) => {
+    try {
+      await deleteNovel(novelId);
+      return novelId;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 export const addChapter = createAsyncThunk(
   "novels/addChapter",
   async ({ id, chapter }, { rejectWithValue }) => {
@@ -250,6 +263,7 @@ const novelSlice = createSlice({
       state.nickNameNovelsStatus = "idle";
       state.keyWordsNovelsStatus = "idle";
       state.addNovelStatus = "idle";
+      state.delNovelStatus = "idle";
       state.addChapterStatus = "idle";
     },
     sortNovels: (state, action) => {
@@ -374,7 +388,26 @@ const novelSlice = createSlice({
         state.displayList = state.originalList;
       })
       .addCase(addNovel.rejected, (state, action) => {
-        state.addNovelStatus = "failed";
+        state.delNovelStatus = "failed";
+        console.error("Failed to add novel:", action.payload);
+      })
+      .addCase(delNovel.pending, (state) => {
+        state.status = "idle";
+        state.userNovelsStatus = "idle";
+        state.myNovelsStatus = "idle";
+        state.nickNameNovelsStatus = "idle";
+        state.keyWordsNovelsStatus = "idle";
+        state.delNovelStatus = "loading";
+      })
+      .addCase(delNovel.fulfilled, (state, action) => {
+        state.delNovel = "succeeded";
+        state.originalList = state.originalList.filter(
+          (novel) => novel.novelId !== action.payload
+        );
+        state.displayList = state.originalList;
+      })
+      .addCase(delNovel.rejected, (state, action) => {
+        state.delNovelStatus = "failed";
         console.error("Failed to add novel:", action.payload);
       })
       .addCase(addChapter.pending, (state) => {

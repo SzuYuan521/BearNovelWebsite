@@ -3,7 +3,11 @@ import { Button, Row, Col, Card, Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import ReactDOM from "react-dom";
 import NovelPopular from "./NovelPopular";
-import { getMyNovelList, selectDisplayList } from "../redux/slices/novelSlice";
+import {
+  getMyNovelList,
+  selectDisplayList,
+  delNovel,
+} from "../redux/slices/novelSlice";
 import { useModal } from "../contexts/ModalContext";
 import { useDispatch, useSelector } from "react-redux";
 import CreateNovel from "./CreateNovel";
@@ -60,7 +64,14 @@ const MyNovels = () => {
   };
 
   const handleDelete = (novelId) => {
-    console.log(`刪除作品: ${novelId}`);
+    openModal(
+      "確認刪除",
+      "您確定刪除作品? 刪除後無法恢復",
+      () => {
+        dispatch(delNovel(novelId));
+      },
+      true
+    );
   };
 
   return (
@@ -106,9 +117,9 @@ const MyNovels = () => {
 
                       {ReactDOM.createPortal(
                         <DropdownMenu
-                          id={novel.id}
+                          id={novel.novelId}
                           handleSettings={handleSettings}
-                          handleDelete={handleDelete}
+                          handleDelete={() => handleDelete(novel.novelId)}
                         />,
                         document.body
                       )}
@@ -121,7 +132,7 @@ const MyNovels = () => {
                       <Card.Body className="d-flex align-items-center m-0 p-0">
                         <div className="me-3">
                           <img
-                            src="/img/這道長能處算命就送女朋友.jfif" // 這裡替換為實際圖片路徑
+                            src="/img/novel-cover-empty-tip.png" // 這裡替換為實際圖片路徑
                             alt={`${novel.title} 封面`}
                             className="novel-cover-image"
                           />
