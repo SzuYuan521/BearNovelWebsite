@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using System.Security.Claims;
+using BearNovelWebsiteApi.Controllers;
 
 namespace BearNovelWebsiteApi.Services
 {
@@ -172,6 +173,34 @@ namespace BearNovelWebsiteApi.Services
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<List<ChapterDto>> GetChaptersAsync(int novelId, int page, int pageSize)
+        {
+            return await _context.Chapters
+                .Where(c => c.NovelId == novelId)
+                .OrderBy(c => c.ChapterNumber)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new ChapterDto
+                {
+                    ChapterId = c.ChapterId,
+                    Title = c.Title,
+                    ChapterNumber = c.ChapterNumber,
+                    UpdatedAt = c.UpdatedAt
+                })
+                .ToListAsync();
+        }
+
+        public async Task<string> GetChapterContentAsync(int novelId, int chapterId)
+        {
+            var chapter = await _context.Chapters
+                .Where(c => c.NovelId == novelId && c.ChapterId == chapterId)
+                .FirstOrDefaultAsync();
+
+            return chapter?.Content ?? string.Empty;
+        }
+
+
 
         /// <summary>
         /// 獲取熱門小說

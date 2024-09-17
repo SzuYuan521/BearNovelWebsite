@@ -260,3 +260,28 @@ export const getAllChapters = async (id) => {
     throw error;
   }
 };
+
+export const GetChapterList = async (novelId, page) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/${novelId}/chapterlist?page=${page}&pageSize=10`
+    );
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.log("取得章節失敗");
+    throw error;
+  }
+};
+
+export const GetChapterContext = async (novelId, chapterId) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/${novelId}/chapters/${chapterId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log("取得章節內容");
+    throw error;
+  }
+};

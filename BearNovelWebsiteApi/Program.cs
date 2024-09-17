@@ -128,6 +128,9 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.InstanceName = "BearNovelWebsite";
 });
 
+// 添加 IMemoryCache 服務
+builder.Services.AddMemoryCache();
+
 // 啟用 CORS (因為前後端端口可能不一致)
 builder.Services.AddCors(options =>
 {

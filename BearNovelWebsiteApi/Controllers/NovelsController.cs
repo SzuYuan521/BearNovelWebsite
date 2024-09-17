@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -20,12 +21,14 @@ namespace BearNovelWebsiteApi.Controllers
         private readonly ApplicationDbContext _context;
         private readonly NovelService _novelService;
         private readonly IDistributedCache _cache;
+        private readonly IMemoryCache _memoryCache;
 
-        public NovelsController(ApplicationDbContext context, NovelService novelService, IDistributedCache cache)
+        public NovelsController(ApplicationDbContext context, NovelService novelService, IDistributedCache cache, IMemoryCache memoryCache)
         {
             _context = context;
             _novelService = novelService;
             _cache = cache;
+            _memoryCache = memoryCache;
         }
 
         /// <summary>
@@ -580,6 +583,50 @@ namespace BearNovelWebsiteApi.Controllers
         }
 
         /// <summary>
+        /// 取小說分頁
+        /// </summary>
+        /// <param name="novelId"></param>
+        /// <param name="page">第n頁</param>
+        /// <param name="pageSize">預設10個一頁</param>
+        /// <returns></returns>
+        [HttpGet("{novelId}/chapterlist")]
+        public async Task<IActionResult> GetChapterList(int novelId, int page = 1, int pageSize = 10)
+        {
+            var cacheKey = $"novel_{novelId}___chapters_page_{page}";
+
+            if (!_memoryCache.TryGetValue(cacheKey, out List<ChapterDto> chapters))
+            {
+                chapters = await _novelService.GetChaptersAsync(novelId, page, pageSize);
+                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(10));
+                _memoryCache.Set(cacheKey, chapters, cacheEntryOptions);
+            }
+
+            return Ok(chapters);
+        }
+
+        /// <summary>
+        /// 取小說章節
+        /// </summary>
+        /// <param name="novelId"></param>
+        /// <param name="chapterId"></param>
+        /// <returns></returns>
+        [HttpGet("{novelId}/chapters/{chapterId}")]
+        public async Task<IActionResult> GetChapterContent(int novelId, int chapterId)
+        {
+            var cacheKey = $"novel_{novelId}_chapter_{chapterId}_content";
+
+            if (!_memoryCache.TryGetValue(cacheKey, out string content))
+            {
+                content = await _novelService.GetChapterContentAsync(novelId, chapterId);
+                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(Constants.NovelsCacheMinutes));
+                _memoryCache.Set(cacheKey, content, cacheEntryOptions);
+            }
+
+            return Ok(new { content });
+        }
+
+
+        /// <summary>
         /// 更新章節標題和內容
         /// </summary>
         /// <param name="chapterId">章節ID</param>
@@ -684,6 +731,11 @@ namespace BearNovelWebsiteApi.Controllers
             return Ok(chapters);
         }
 
+        /// <summary>
+        /// 依照 draft.js 的文本儲存格式取出章節內文
+        /// </summary>
+        /// <param name="jsonContent"></param>
+        /// <returns></returns>
         public int GetPlainTextLength(string jsonContent)
         {
             if (string.IsNullOrEmpty(jsonContent)) return 0;
@@ -719,6 +771,14 @@ namespace BearNovelWebsiteApi.Controllers
     {
         public string ChapterTitle { get; set; }
         public string ChapterContent { get; set; }
+    }
+
+    public class ChapterDto
+    {
+        public int ChapterId { get; set; }
+        public string Title { get; set; }
+        public int ChapterNumber { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 
     public class Content
