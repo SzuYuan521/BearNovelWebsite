@@ -11,6 +11,7 @@ const GlobalModel = ({
   title,
   context,
   onButtonClick,
+  hasCancel,
 }) => {
   const handleClick = () => {
     // 如果 onButtonClick 存在則執行它, 否則僅關閉 Modal
@@ -35,7 +36,12 @@ const GlobalModel = ({
       <div className="modal-body">
         <p>{context}</p>
       </div>
-      <div className="modal-footer">
+      <div className="modal-footer gap-2">
+        {hasCancel && (
+          <button onClick={onRequestClose} className="modal-btn-secondary">
+            取消
+          </button>
+        )}
         <button onClick={handleClick} className="modal-btn-primary">
           確認
         </button>

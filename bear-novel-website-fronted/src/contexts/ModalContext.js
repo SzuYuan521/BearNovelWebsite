@@ -9,16 +9,21 @@ export const ModalProvider = ({ children }) => {
     title: "",
     context: "",
     onButtonClick: () => {},
+    hasCancel: false,
   });
 
-  const openModal = useCallback((title, context, onButtonClick) => {
-    setModalState({
-      isOpen: true,
-      title,
-      context,
-      onButtonClick,
-    });
-  }, []);
+  const openModal = useCallback(
+    (title, context, onButtonClick, hasCancel = false) => {
+      setModalState({
+        isOpen: true,
+        title,
+        context,
+        onButtonClick,
+        hasCancel,
+      });
+    },
+    []
+  );
 
   const closeModal = useCallback(() => {
     setModalState((modalState) => ({
@@ -39,6 +44,7 @@ export const ModalProvider = ({ children }) => {
           modalState.onButtonClick();
           closeModal();
         }}
+        hasCancel={modalState.hasCancel}
       />
     </ModalContext.Provider>
   );

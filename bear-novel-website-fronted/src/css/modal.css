@@ -38,6 +38,7 @@
 .modal-footer {
   margin: 10px 0px 0px;
   justify-content: center;
+  display: flex;
 }
 
 .modal-btn-primary {
@@ -52,6 +53,21 @@
 }
 
 .modal-btn-primary:hover {
+  opacity: 0.9;
+}
+
+.modal-btn-secondary {
+  background-color: #6c757d;
+  width: 100%;
+  max-width: 200px;
+  border: none;
+  border-radius: 30px;
+  padding: 10px;
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.modal-btn-secondary:hover {
   opacity: 0.9;
 }
 
