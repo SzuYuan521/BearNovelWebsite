@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BearNovelWebsiteApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240916032501_AddChapterWordCount")]
-    partial class AddChapterWordCount
+    [Migration("20240919121816_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
