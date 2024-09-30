@@ -46,7 +46,10 @@ const NovelList = () => {
                   </div>
                 </Link>
                 <div className="novel-right">
-                  <Link to={`/novels/${novel.novelId}`} className="novel-link">
+                  <Link
+                    to={`/novel-page/${novel.novelId}`}
+                    className="novel-link"
+                  >
                     <h5 className="novel-title">{novel.title}</h5>
                   </Link>
                   <div className="novel-sub-Info-right">
